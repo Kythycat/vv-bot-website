@@ -3,9 +3,9 @@ const urlParams = new URLSearchParams(window.location.search);
 const discordId = urlParams.get('discordId');
 
 function redirectToAuth() {
-    // These will be replaced with your actual values from .env
-    const clientId = 'YOUR_ROBLOX_CLIENT_ID'; // Will update after Roblox OAuth setup
-    const redirectUri = encodeURIComponent('YOUR_BOT_CALLBACK_URL'); // Your Wispbyte bot URL
+    // These will be replaced with  actual values from .env
+    const clientId = '8678137542506017326'; // Will update after Roblox OAuth setup
+    const redirectUri = encodeURIComponent('https://85.215.137.163:3000/callback'); // Wispbyte bot URL
     const scope = 'openid profile';
     
     // Generate random state for security
