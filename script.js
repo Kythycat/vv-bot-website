@@ -5,7 +5,7 @@ const discordId = urlParams.get('discordId');
 function redirectToAuth() {
     // These will be replaced with  actual values from .env
     const clientId = '5689277493290998256'; // Will update after Roblox OAuth setup
-    const redirectUri = encodeURIComponent('https://hat-editor-diamond-costumes.trycloudflare.com/callback'); // Wispbyte bot URL
+    const redirectUri = encodeURIComponent('https://amanda-conducting-argued-golden.trycloudflare.com/callback'); // Wispbyte bot URL
     const scope = 'openid profile';
     
     // Generate random state for security
