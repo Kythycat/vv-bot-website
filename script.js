@@ -4,7 +4,7 @@ const discordId = urlParams.get('discordId');
 
 function redirectToAuth() {
     // These will be replaced with  actual values from .env
-    const clientId = '8678137542506017326'; // Will update after Roblox OAuth setup
+    const clientId = '5689277493290998256'; // Will update after Roblox OAuth setup
     const redirectUri = encodeURIComponent('https://hat-editor-diamond-costumes.trycloudflare.com/callback'); // Wispbyte bot URL
     const scope = 'openid profile';
     
