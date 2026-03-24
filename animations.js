@@ -606,7 +606,6 @@ document.addEventListener('DOMContentLoaded', () => {
     spaceBg = new SpaceBackground();
     spacePhysics = new SpacePhysics();
     animations = new VelvetAnimations();
-    console.log('✨ Velvet Vendetta - Space System Active with Physics');
 });
 
 window.addEventListener('beforeunload', () => {

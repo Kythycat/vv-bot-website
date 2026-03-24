@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loadPage(targetPage, true);
     });
     
-    console.log('✨ Velvet Vendetta - System Online');
+    console.log(' Velvet Vendetta - System Online');
 });
 
 function loadPage(page, isHistoryNavigation = false) {
