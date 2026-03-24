@@ -1,6 +1,6 @@
 /**
  * Velvet Vendetta - Space Animation System
- * Moving star field with optimized performance
+ * Enhanced comet particles with trailing effects + Space Physics
  */
 
 class SpaceBackground {
@@ -10,14 +10,13 @@ class SpaceBackground {
         
         this.ctx = this.canvas.getContext('2d');
         this.stars = [];
-        this.starCount = 200;
-        this.comet = null;
+        this.comets = [];
+        this.starCount = 250;
         this.animationId = null;
         this.isMobile = window.innerWidth < 768;
         
-        // Adjust star count for mobile performance
         if (this.isMobile) {
-            this.starCount = 100;
+            this.starCount = 120;
         }
         
         this.init();
@@ -26,7 +25,6 @@ class SpaceBackground {
     init() {
         this.resizeCanvas();
         this.createStars();
-        this.createComet();
         
         window.addEventListener('resize', () => {
             this.resizeCanvas();
@@ -34,6 +32,7 @@ class SpaceBackground {
         });
         
         this.animate();
+        this.startCometGenerator();
     }
     
     resizeCanvas() {
@@ -46,73 +45,101 @@ class SpaceBackground {
             this.stars.push({
                 x: Math.random() * this.canvas.width,
                 y: Math.random() * this.canvas.height,
-                radius: Math.random() * (this.isMobile ? 1.2 : 1.8) + 0.5,
+                radius: Math.random() * (this.isMobile ? 1.5 : 2.2) + 0.5,
                 alpha: Math.random() * 0.6 + 0.2,
-                speed: Math.random() * 0.3 + 0.1,
-                twinkleSpeed: Math.random() * 0.02 + 0.005,
+                speed: Math.random() * 0.2 + 0.05,
+                twinkleSpeed: Math.random() * 0.02 + 0.008,
                 twinklePhase: Math.random() * Math.PI * 2
             });
         }
     }
     
     createComet() {
-        this.comet = {
-            active: false,
-            x: 0,
-            y: 0,
-            length: 40,
-            speed: 2.5,
-            resetTimer: 0
+        const comet = {
+            x: -100,
+            y: Math.random() * (this.canvas.height * 0.5) + 50,
+            speed: 3.5 + Math.random() * 2,
+            length: 60 + Math.random() * 40,
+            width: 2 + Math.random() * 2,
+            particles: [],
+            active: true,
+            age: 0,
+            maxAge: 120,
+            angle: 25 + (Math.random() - 0.5) * 15
         };
         
-        // Schedule first comet
-        setTimeout(() => this.activateComet(), 5000 + Math.random() * 8000);
+        for (let i = 0; i < 25; i++) {
+            comet.particles.push({
+                x: comet.x - i * 3,
+                y: comet.y - (i * 3) * Math.tan(comet.angle * Math.PI / 180),
+                life: 1 - (i / 25),
+                size: Math.random() * 2 + 1
+            });
+        }
+        
+        this.comets.push(comet);
+        
+        setTimeout(() => {
+            if (this.comets.length < 3) {
+                this.createComet();
+            }
+        }, 8000 + Math.random() * 10000);
     }
     
-    activateComet() {
-        if (!this.comet) return;
-        
-        this.comet.active = true;
-        this.comet.x = -50;
-        this.comet.y = Math.random() * (this.canvas.height * 0.4) + 20;
-        this.comet.speed = 2.5 + Math.random() * 1.5;
-        this.comet.length = 35 + Math.random() * 20;
-        
-        // Schedule next comet
-        setTimeout(() => {
-            if (this.comet) {
-                this.comet.active = false;
-                setTimeout(() => this.activateComet(), 8000 + Math.random() * 12000);
+    startCometGenerator() {
+        setTimeout(() => this.createComet(), 3000);
+        setInterval(() => {
+            if (this.comets.length < 2 && !this.isMobile) {
+                this.createComet();
             }
-        }, 4000);
+        }, 12000);
     }
     
     updateStars() {
         const time = Date.now() * 0.002;
         
         for (let star of this.stars) {
-            // Move stars slowly to create depth effect
-            star.x -= star.speed * 0.3;
+            star.x -= star.speed;
             
-            // Reset stars that go off screen
             if (star.x < 0) {
                 star.x = this.canvas.width;
                 star.y = Math.random() * this.canvas.height;
             }
             
-            // Twinkling effect
             star.currentAlpha = star.alpha + Math.sin(time * star.twinkleSpeed + star.twinklePhase) * 0.2;
             star.currentAlpha = Math.max(0.15, Math.min(0.9, star.currentAlpha));
         }
     }
     
-    updateComet() {
-        if (!this.comet || !this.comet.active) return;
-        
-        this.comet.x += this.comet.speed;
-        
-        if (this.comet.x > this.canvas.width + 100) {
-            this.comet.active = false;
+    updateComets() {
+        for (let i = this.comets.length - 1; i >= 0; i--) {
+            const comet = this.comets[i];
+            comet.age++;
+            
+            const rad = comet.angle * Math.PI / 180;
+            comet.x += comet.speed * Math.cos(rad);
+            comet.y += comet.speed * Math.sin(rad);
+            
+            comet.particles.unshift({
+                x: comet.x,
+                y: comet.y,
+                life: 1,
+                size: Math.random() * 2.5 + 1
+            });
+            
+            if (comet.particles.length > 35) {
+                comet.particles.pop();
+            }
+            
+            for (let p of comet.particles) {
+                p.life -= 0.03;
+            }
+            
+            comet.particles = comet.particles.filter(p => p.life > 0);
+            
+            if (comet.x > this.canvas.width + 200 || comet.y > this.canvas.height + 200 || comet.age > comet.maxAge) {
+                this.comets.splice(i, 1);
+            }
         }
     }
     
@@ -122,32 +149,53 @@ class SpaceBackground {
             this.ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
             this.ctx.fillStyle = `rgba(255, 255, 255, ${star.currentAlpha || star.alpha})`;
             this.ctx.fill();
+            
+            if (star.radius > 1.5) {
+                this.ctx.beginPath();
+                this.ctx.arc(star.x, star.y, star.radius * 1.5, 0, Math.PI * 2);
+                this.ctx.fillStyle = `rgba(255, 255, 255, ${(star.currentAlpha || star.alpha) * 0.3})`;
+                this.ctx.fill();
+            }
         }
     }
     
-    drawComet() {
-        if (!this.comet || !this.comet.active) return;
-        
-        const gradient = this.ctx.createLinearGradient(
-            this.comet.x, this.comet.y,
-            this.comet.x - this.comet.length, this.comet.y - this.comet.length * 0.5
-        );
-        gradient.addColorStop(0, 'rgba(255, 255, 255, 0.9)');
-        gradient.addColorStop(0.4, 'rgba(255, 255, 255, 0.5)');
-        gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
-        
-        this.ctx.beginPath();
-        this.ctx.moveTo(this.comet.x, this.comet.y);
-        this.ctx.lineTo(this.comet.x - this.comet.length, this.comet.y - this.comet.length * 0.5);
-        this.ctx.lineTo(this.comet.x - this.comet.length * 0.7, this.comet.y + this.comet.length * 0.3);
-        this.ctx.fillStyle = gradient;
-        this.ctx.fill();
-        
-        // Comet head
-        this.ctx.beginPath();
-        this.ctx.arc(this.comet.x, this.comet.y, 2.5, 0, Math.PI * 2);
-        this.ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-        this.ctx.fill();
+    drawComets() {
+        for (const comet of this.comets) {
+            for (let i = 0; i < comet.particles.length; i++) {
+                const p = comet.particles[i];
+                const alpha = p.life * 0.7;
+                const size = p.size * p.life;
+                
+                this.ctx.beginPath();
+                this.ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+                
+                const gradient = this.ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, size * 2);
+                gradient.addColorStop(0, `rgba(255, 255, 255, ${alpha * 0.9})`);
+                gradient.addColorStop(1, `rgba(255, 255, 255, 0)`);
+                this.ctx.fillStyle = gradient;
+                this.ctx.fill();
+            }
+            
+            this.ctx.beginPath();
+            this.ctx.arc(comet.x, comet.y, 3.5, 0, Math.PI * 2);
+            const headGradient = this.ctx.createRadialGradient(comet.x, comet.y, 0, comet.x, comet.y, 8);
+            headGradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
+            headGradient.addColorStop(0.5, 'rgba(255, 255, 255, 0.7)');
+            headGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+            this.ctx.fillStyle = headGradient;
+            this.ctx.fill();
+            
+            this.ctx.beginPath();
+            this.ctx.arc(comet.x, comet.y, 2, 0, Math.PI * 2);
+            this.ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+            this.ctx.fill();
+        }
+    }
+    
+    drawShootingStars() {
+        if (Math.random() < 0.002 && !this.isMobile && this.comets.length < 3) {
+            this.createComet();
+        }
     }
     
     animate() {
@@ -156,9 +204,10 @@ class SpaceBackground {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         
         this.updateStars();
-        this.updateComet();
+        this.updateComets();
         this.drawStars();
-        this.drawComet();
+        this.drawComets();
+        this.drawShootingStars();
         
         this.animationId = requestAnimationFrame(() => this.animate());
     }
@@ -171,12 +220,76 @@ class SpaceBackground {
 }
 
 /**
- * Velvet Vendetta - Animation System (Optimized)
+ * Velvet Vendetta - Space Physics System
+ * Adds floating/parallax effects to elements
+ */
+class SpacePhysics {
+    constructor() {
+        this.elements = [];
+        this.scrollY = 0;
+        this.mouseX = 0;
+        this.mouseY = 0;
+        this.init();
+    }
+    
+    init() {
+        this.elements = document.querySelectorAll('.float-card, .float-text, .float-text-delay');
+        
+        window.addEventListener('scroll', () => {
+            this.scrollY = window.scrollY;
+            this.updatePhysics();
+        });
+        
+        document.addEventListener('mousemove', (e) => {
+            this.mouseX = (e.clientX / window.innerWidth) - 0.5;
+            this.mouseY = (e.clientY / window.innerHeight) - 0.5;
+            this.updateMouseParallax();
+        });
+        
+        this.updatePhysics();
+        this.startAutoFloat();
+    }
+    
+    updatePhysics() {
+        this.elements.forEach((el, index) => {
+            const speed = parseFloat(el.getAttribute('data-speed')) || 0.3;
+            const yOffset = this.scrollY * speed * 0.1;
+            el.style.transform = `translateY(${yOffset}px)`;
+        });
+    }
+    
+    updateMouseParallax() {
+        const cards = document.querySelectorAll('.card');
+        cards.forEach((card, index) => {
+            const speed = 0.02 + (index * 0.005);
+            const xOffset = this.mouseX * 15 * speed;
+            const yOffset = this.mouseY * 15 * speed;
+            card.style.setProperty('--mouse-x', `${xOffset}px`);
+            card.style.setProperty('--mouse-y', `${yOffset}px`);
+        });
+    }
+    
+    startAutoFloat() {
+        setInterval(() => {
+            this.elements.forEach((el, index) => {
+                if (!el.matches(':hover')) {
+                    const floatSpeed = 0.5 + (index * 0.1);
+                    const floatOffset = Math.sin(Date.now() * 0.002 * floatSpeed) * 3;
+                    const scrollOffset = this.scrollY * (parseFloat(el.getAttribute('data-speed')) || 0.3) * 0.1;
+                    el.style.transform = `translateY(${scrollOffset + floatOffset}px)`;
+                }
+            });
+        }, 50);
+    }
+}
+
+/**
+ * Velvet Vendetta - Animation System
  */
 class VelvetAnimations {
     constructor() {
         this.particles = [];
-        this.particleCount = 35; // Reduced for performance
+        this.particleCount = 45;
         this.mousePosition = { x: 0, y: 0 };
         this.mouseActive = false;
         this.animationFrame = null;
@@ -186,7 +299,7 @@ class VelvetAnimations {
         this.isMobile = window.innerWidth < 768;
         
         if (this.isMobile) {
-            this.particleCount = 20;
+            this.particleCount = 25;
         }
         
         this.init();
@@ -208,13 +321,14 @@ class VelvetAnimations {
     }
     
     createVerticalLines() {
-        const lineCount = this.isMobile ? 3 : 5;
+        const lineCount = this.isMobile ? 3 : 6;
         for (let i = 0; i < lineCount; i++) {
             const line = document.createElement('div');
             line.className = 'vertical-line';
-            line.style.left = `${15 + (i * 18)}%`;
-            line.style.animationDelay = `${i * 1.5}s`;
-            line.style.animationDuration = `${10 + i * 2}s`;
+            line.style.left = `${12 + (i * 15)}%`;
+            line.style.animationDelay = `${i * 1.2}s`;
+            line.style.animationDuration = `${9 + i * 2}s`;
+            line.style.opacity = `${0.2 + Math.random() * 0.3}`;
             if (this.movingLinesContainer) {
                 this.movingLinesContainer.appendChild(line);
             }
@@ -223,7 +337,7 @@ class VelvetAnimations {
     }
     
     createDiagonalLines() {
-        const lineCount = this.isMobile ? 2 : 3;
+        const lineCount = this.isMobile ? 2 : 4;
         for (let i = 0; i < lineCount; i++) {
             const line = document.createElement('div');
             line.className = 'diagonal-line';
@@ -231,12 +345,12 @@ class VelvetAnimations {
                 position: absolute;
                 width: 150%;
                 height: 1px;
-                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-                top: ${30 + i * 25}%;
+                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+                top: ${25 + i * 22}%;
                 left: -40%;
-                transform: rotate(${18 + i * 5}deg);
+                transform: rotate(${18 + i * 6}deg);
                 animation: diagonalMove ${14 + i * 2}s linear infinite;
-                animation-delay: ${i * 2}s;
+                animation-delay: ${i * 1.5}s;
                 pointer-events: none;
             `;
             this.movingLinesContainer?.appendChild(line);
@@ -249,7 +363,7 @@ class VelvetAnimations {
         
         document.addEventListener('mousemove', (e) => {
             const now = Date.now();
-            if (now - lastMoveTime > 16) { // Throttle to ~60fps
+            if (now - lastMoveTime > 16) {
                 this.mousePosition = { x: e.clientX, y: e.clientY };
                 this.mouseActive = true;
                 lastMoveTime = now;
@@ -258,7 +372,7 @@ class VelvetAnimations {
             clearTimeout(this.mouseInactiveTimer);
             this.mouseInactiveTimer = setTimeout(() => {
                 this.mouseActive = false;
-            }, 100);
+            }, 150);
         });
         
         this.animateParticles();
@@ -270,26 +384,28 @@ class VelvetAnimations {
         for (let i = 0; i < this.particleCount; i++) {
             const particle = document.createElement('div');
             particle.className = 'mouse-particle';
-            const size = Math.random() * 2.5 + 1;
+            const size = Math.random() * 3 + 1.5;
             const angle = (i / this.particleCount) * Math.PI * 2;
             
             particle.style.cssText = `
                 position: fixed;
                 width: ${size}px;
                 height: ${size}px;
-                background: rgba(255, 255, 255, 0.7);
+                background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.4) 100%);
                 border-radius: 50%;
                 pointer-events: none;
                 z-index: 9998;
                 left: 0;
                 top: 0;
                 opacity: 0;
+                box-shadow: 0 0 ${size}px rgba(255,255,255,0.5);
                 will-change: left, top;
+                transition: opacity 0.05s ease;
             `;
             
             particle._angle = angle;
-            particle._radius = 28;
-            particle._speed = 0.4 + Math.random() * 0.4;
+            particle._radius = 32;
+            particle._speed = 0.5 + Math.random() * 0.5;
             particle._offset = Math.random() * Math.PI * 2;
             
             container.appendChild(particle);
@@ -301,7 +417,7 @@ class VelvetAnimations {
         if (!this.mouseActive || this.isMobile) {
             this.particles.forEach(particle => {
                 if (parseFloat(particle.style.opacity) > 0) {
-                    particle.style.opacity = Math.max(0, parseFloat(particle.style.opacity) - 0.04);
+                    particle.style.opacity = Math.max(0, parseFloat(particle.style.opacity) - 0.05);
                 }
             });
             this.animationFrame = requestAnimationFrame(() => this.animateParticles());
@@ -312,7 +428,7 @@ class VelvetAnimations {
         
         this.particles.forEach((particle, index) => {
             const angle = particle._angle + (time * particle._speed);
-            const radius = particle._radius + Math.sin(time * 1.2 + index) * 4;
+            const radius = particle._radius + Math.sin(time * 1.2 + index) * 6;
             
             const x = this.mousePosition.x + Math.cos(angle) * radius;
             const y = this.mousePosition.y + Math.sin(angle) * radius;
@@ -320,9 +436,12 @@ class VelvetAnimations {
             particle.style.left = `${x}px`;
             particle.style.top = `${y}px`;
             
-            const targetOpacity = 0.5;
+            const targetOpacity = 0.65;
             const currentOpacity = parseFloat(particle.style.opacity) || 0;
             particle.style.opacity = currentOpacity + (targetOpacity - currentOpacity) * 0.12;
+            
+            const scale = 0.8 + Math.sin(time * 2.5 + index) * 0.3;
+            particle.style.transform = `scale(${scale})`;
         });
         
         this.animationFrame = requestAnimationFrame(() => this.animateParticles());
@@ -342,35 +461,32 @@ class VelvetAnimations {
     initCursorTrail() {
         if (this.isMobile) return;
         
-        let trailTimeout = null;
-        
         document.addEventListener('mousemove', (e) => {
-            if (trailTimeout) clearTimeout(trailTimeout);
-            
             const trailDot = document.createElement('div');
             trailDot.className = 'cursor-trail';
-            const size = Math.random() * 3 + 1.5;
+            const size = Math.random() * 4 + 2;
             trailDot.style.cssText = `
                 position: fixed;
                 width: ${size}px;
                 height: ${size}px;
-                background: rgba(255, 255, 255, 0.5);
+                background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.3) 100%);
                 border-radius: 50%;
                 pointer-events: none;
                 z-index: 9999;
                 left: ${e.clientX}px;
                 top: ${e.clientY}px;
-                opacity: 0.5;
-                transition: opacity 0.15s ease;
+                opacity: 0.6;
+                box-shadow: 0 0 ${size}px rgba(255,255,255,0.4);
+                transition: opacity 0.2s ease;
             `;
             document.body.appendChild(trailDot);
             
-            trailTimeout = setTimeout(() => {
+            setTimeout(() => {
                 trailDot.style.opacity = '0';
                 setTimeout(() => {
                     if (trailDot.parentElement) trailDot.remove();
-                }, 150);
-            }, 200);
+                }, 200);
+            }, 300);
         });
     }
     
@@ -382,13 +498,13 @@ class VelvetAnimations {
         buttons.forEach(button => {
             button.addEventListener('mousemove', (e) => {
                 const rect = button.getBoundingClientRect();
-                const x = (e.clientX - rect.left - rect.width / 2) * 0.15;
-                const y = (e.clientY - rect.top - rect.height / 2) * 0.15;
-                button.style.transform = `translate(${x}px, ${y}px)`;
+                const x = (e.clientX - rect.left - rect.width / 2) * 0.2;
+                const y = (e.clientY - rect.top - rect.height / 2) * 0.2;
+                button.style.transform = `translate(${x}px, ${y}px) scale(1.02)`;
             });
             
             button.addEventListener('mouseleave', () => {
-                button.style.transform = 'translate(0px, 0px)';
+                button.style.transform = 'translate(0px, 0px) scale(1)';
             });
         });
     }
@@ -404,11 +520,11 @@ class VelvetAnimations {
                 }
             });
         }, { threshold: 0.1 });
-
+        
         elements.forEach(element => {
             element.style.opacity = '0';
-            element.style.transform = 'translateY(15px)';
-            element.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+            element.style.transform = 'translateY(20px)';
+            element.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
             observer.observe(element);
             
             setTimeout(() => {
@@ -416,7 +532,7 @@ class VelvetAnimations {
                     element.style.opacity = '1';
                     element.style.transform = 'translateY(0)';
                 }
-            }, 200);
+            }, 300);
         });
     }
     
@@ -428,49 +544,51 @@ class VelvetAnimations {
             
             setInterval(() => {
                 if (increasing) {
-                    intensity += 0.006;
-                    if (intensity >= 0.2) increasing = false;
+                    intensity += 0.008;
+                    if (intensity >= 0.22) increasing = false;
                 } else {
-                    intensity -= 0.006;
+                    intensity -= 0.008;
                     if (intensity <= 0.08) increasing = true;
                 }
                 
-                edgeGlow.style.borderColor = `rgba(255, 255, 255, ${0.1 + intensity})`;
+                edgeGlow.style.borderColor = `rgba(255, 255, 255, ${0.12 + intensity})`;
             }, 100);
         }
     }
     
     startAmbientAnimations() {
-        // Animate dots (reduced frequency for performance)
-        const dots = document.querySelectorAll('.dot');
+        const dots = document.querySelectorAll('.glow-dot');
         let dotIndex = 0;
         
         setInterval(() => {
             if (dots.length > 0 && !this.isMobile) {
                 const dot = dots[dotIndex % dots.length];
                 if (dot) {
-                    dot.style.transform = 'scale(1.4)';
+                    dot.style.transform = 'scale(1.6)';
+                    dot.style.opacity = '1';
                     setTimeout(() => {
-                        if (dot) dot.style.transform = 'scale(1)';
-                    }, 120);
+                        if (dot) {
+                            dot.style.transform = 'scale(1)';
+                            dot.style.opacity = '0.7';
+                        }
+                    }, 150);
                 }
                 dotIndex++;
             }
-        }, 1200);
+        }, 1000);
         
-        // Random card glow
         setInterval(() => {
             if (!this.isMobile) {
                 const cards = document.querySelectorAll('.card');
                 const randomCard = cards[Math.floor(Math.random() * cards.length)];
                 if (randomCard) {
-                    randomCard.style.boxShadow = '0 0 20px rgba(255, 255, 255, 0.1)';
+                    randomCard.style.boxShadow = '0 0 35px rgba(255, 255, 255, 0.15)';
                     setTimeout(() => {
                         randomCard.style.boxShadow = '';
-                    }, 300);
+                    }, 400);
                 }
             }
-        }, 5000);
+        }, 6000);
     }
     
     destroy() {
@@ -480,14 +598,15 @@ class VelvetAnimations {
     }
 }
 
-// Initialize when DOM is ready
 let spaceBg = null;
+let spacePhysics = null;
 let animations = null;
 
 document.addEventListener('DOMContentLoaded', () => {
     spaceBg = new SpaceBackground();
+    spacePhysics = new SpacePhysics();
     animations = new VelvetAnimations();
-    console.log('✨ Velvet Vendetta - Space System Active');
+    console.log('✨ Velvet Vendetta - Space System Active with Physics');
 });
 
 window.addEventListener('beforeunload', () => {

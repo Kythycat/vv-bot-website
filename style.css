@@ -13,7 +13,6 @@ body {
     overflow-x: hidden;
 }
 
-/* Smooth scroll behavior */
 html {
     scroll-behavior: smooth;
 }
@@ -30,7 +29,19 @@ html {
     pointer-events: none;
 }
 
-/* Noise overlay for texture */
+/* Gradient Background */
+.gradient-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 50% 50%, rgba(10, 10, 10, 0.4) 0%, #000000 100%);
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Noise overlay */
 .noise-overlay {
     position: fixed;
     top: 0;
@@ -55,7 +66,6 @@ html {
     overflow: hidden;
 }
 
-/* Horizontal moving lines */
 .moving-lines::before {
     content: '';
     position: absolute;
@@ -63,8 +73,9 @@ html {
     left: -100%;
     width: 100%;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.3), transparent);
     animation: moveLine 12s linear infinite;
+    filter: blur(1px);
 }
 
 .moving-lines::after {
@@ -74,47 +85,50 @@ html {
     right: -100%;
     width: 100%;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.2), transparent);
     animation: moveLineReverse 14s linear infinite;
+    filter: blur(1px);
 }
 
 @keyframes moveLine {
     0% { left: -100%; opacity: 0; }
-    10% { opacity: 0.5; }
-    50% { left: 100%; opacity: 0.3; }
+    10% { opacity: 0.6; }
+    50% { left: 100%; opacity: 0.4; }
     100% { left: 200%; opacity: 0; }
 }
 
 @keyframes moveLineReverse {
     0% { right: -100%; opacity: 0; }
-    10% { opacity: 0.4; }
-    50% { right: 100%; opacity: 0.2; }
+    10% { opacity: 0.5; }
+    50% { right: 100%; opacity: 0.3; }
     100% { right: 200%; opacity: 0; }
 }
 
-/* Vertical lines - created by JS */
+/* Vertical lines */
 .vertical-line {
     position: absolute;
     width: 1px;
     height: 100%;
-    background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.4), transparent);
     animation: moveVertical 10s linear infinite;
     pointer-events: none;
+    filter: blur(0.5px);
 }
 
 @keyframes moveVertical {
     0% { top: -100%; opacity: 0; }
-    10% { opacity: 0.4; }
-    50% { top: 100%; opacity: 0.2; }
+    10% { opacity: 0.5; }
+    50% { top: 100%; opacity: 0.3; }
     100% { top: 200%; opacity: 0; }
 }
 
 /* Diagonal lines */
 .diagonal-line {
     position: absolute;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
     animation: diagonalMove 16s linear infinite;
     pointer-events: none;
+    filter: blur(0.5px);
 }
 
 @keyframes diagonalMove {
@@ -123,10 +137,10 @@ html {
         opacity: 0;
     }
     15% {
-        opacity: 0.3;
+        opacity: 0.4;
     }
     85% {
-        opacity: 0.15;
+        opacity: 0.2;
     }
     100% {
         transform: translateX(100%) rotate(20deg);
@@ -134,7 +148,7 @@ html {
     }
 }
 
-/* Edge Glow */
+/* Edge Glow - FIXED: No scroll overlap */
 .edge-glow {
     position: fixed;
     top: 15px;
@@ -142,33 +156,34 @@ html {
     right: 15px;
     bottom: 15px;
     pointer-events: none;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 24px;
-    z-index: 1;
+    z-index: 10;
     transition: all 0.3s ease;
     animation: edgePulse 3s ease-in-out infinite;
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.03);
 }
 
 @keyframes edgePulse {
     0%, 100% {
-        border-color: rgba(255, 255, 255, 0.12);
+        border-color: rgba(255, 255, 255, 0.15);
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.02);
     }
     50% {
-        border-color: rgba(255, 255, 255, 0.28);
+        border-color: rgba(255, 255, 255, 0.35);
+        box-shadow: 0 0 50px rgba(255, 255, 255, 0.08);
     }
 }
 
+/* Container - FIXED: Content stays within border with padding */
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px 30px;
+    padding: 25px 40px 40px 40px;
     position: relative;
-    z-index: 2;
-}
-
-/* Page transition animation */
-.container {
+    z-index: 20;
     animation: pageFadeIn 0.5s ease-out forwards;
+    min-height: 100vh;
 }
 
 @keyframes pageFadeIn {
@@ -182,42 +197,36 @@ html {
     }
 }
 
-/* Top Logo */
+/* Top Logo - Fixed within border */
 .top-logo {
     position: fixed;
-    top: 20px;
-    right: 25px;
+    top: 30px;
+    right: 40px;
     z-index: 100;
     text-align: right;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(8px);
-    padding: 6px 16px;
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    padding: 8px 18px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
     transition: all 0.3s ease;
 }
 
-@media (max-width: 768px) {
-    .top-logo {
-        top: 12px;
-        right: 15px;
-        padding: 4px 12px;
-    }
-}
-
 .top-logo:hover {
-    border-color: rgba(255, 255, 255, 0.6);
+    border-color: rgba(255, 255, 255, 0.7);
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
 }
 
 .logo-text {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     font-weight: 700;
     letter-spacing: 1.5px;
     color: #ffffff;
 }
 
 .logo-sub {
-    font-size: 0.55rem;
+    font-size: 0.6rem;
     color: #aaaaaa;
     letter-spacing: 1px;
     margin-top: 2px;
@@ -228,20 +237,21 @@ html {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(8px);
-    padding: 5px 18px;
+    padding: 6px 20px;
     border-radius: 30px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.25);
     margin-bottom: 20px;
 }
 
 .pulse-dot {
-    width: 7px;
-    height: 7px;
+    width: 8px;
+    height: 8px;
     background: #ffffff;
     border-radius: 50%;
     animation: pulse 1.2s ease-in-out infinite;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
 }
 
 @keyframes pulse {
@@ -251,12 +261,13 @@ html {
     }
     50% {
         opacity: 1;
-        transform: scale(1.2);
+        transform: scale(1.3);
+        box-shadow: 0 0 12px rgba(255, 255, 255, 0.8);
     }
 }
 
 .status-text {
-    font-size: 0.6rem;
+    font-size: 0.65rem;
     letter-spacing: 2px;
     font-weight: 500;
     color: #ffffff;
@@ -265,44 +276,61 @@ html {
 /* Header */
 header {
     text-align: center;
-    padding: 35px 20px 35px;
+    padding: 30px 20px 30px;
     position: relative;
 }
 
 h1 {
-    font-size: 3.2rem;
+    font-size: 3.5rem;
     font-weight: 700;
     letter-spacing: -0.5px;
     color: #ffffff;
-    margin-bottom: 12px;
+    margin-bottom: 15px;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
 }
 
-@media (max-width: 768px) {
-    h1 {
-        font-size: 2rem;
+/* Space Physics - Floating Text */
+.float-text {
+    animation: floatUpDown 3s ease-in-out infinite;
+}
+
+.float-text-delay {
+    animation: floatUpDown 3.5s ease-in-out infinite;
+    animation-delay: 0.5s;
+}
+
+@keyframes floatUpDown {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-8px);
     }
 }
 
 .glow-line {
-    width: 70px;
+    width: 80px;
     height: 2px;
-    background: linear-gradient(90deg, transparent, #ffffff, transparent);
-    margin: 18px auto;
-    opacity: 0.5;
-    animation: lineWidth 2s ease-in-out infinite;
+    background: linear-gradient(90deg, transparent, #ffffff, #ffffff, transparent);
+    margin: 20px auto;
+    opacity: 0.6;
+    animation: linePulse 2s ease-in-out infinite;
+    border-radius: 2px;
 }
 
-@keyframes lineWidth {
+@keyframes linePulse {
     0%, 100% {
-        width: 70px;
+        width: 80px;
+        opacity: 0.5;
     }
     50% {
-        width: 100px;
+        width: 120px;
+        opacity: 0.9;
     }
 }
 
 header p {
-    font-size: 0.95rem;
+    font-size: 1rem;
     opacity: 0.7;
     color: #cccccc;
     letter-spacing: 0.5px;
@@ -311,15 +339,15 @@ header p {
 
 /* Progress Notice */
 .progress-notice {
-    margin-top: 22px;
-    padding: 6px 18px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    margin-top: 25px;
+    padding: 8px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 40px;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    font-size: 0.65rem;
+    gap: 10px;
+    font-size: 0.7rem;
     font-weight: 500;
     letter-spacing: 1px;
 }
@@ -337,66 +365,78 @@ header p {
 /* Content Grid */
 .content {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 25px;
-    margin: 45px 0;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+    margin: 40px 0;
 }
 
-/* Cards */
+/* Cards with Space Physics */
 .card {
-    background: rgba(8, 8, 8, 0.75);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    padding: 24px;
-    transition: all 0.3s ease;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(8, 8, 8, 0.85);
+    backdrop-filter: blur(12px);
+    border-radius: 24px;
+    padding: 28px;
+    transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     position: relative;
     overflow: hidden;
 }
 
-@media (max-width: 768px) {
-    .card {
-        padding: 20px;
-        backdrop-filter: blur(5px);
+.float-card {
+    animation: floatCard 4s ease-in-out infinite;
+}
+
+@keyframes floatCard {
+    0%, 100% {
+        transform: translateY(0px);
     }
+    50% {
+        transform: translateY(-6px);
+    }
+}
+
+.card:hover {
+    animation: none;
+    transform: translateY(-8px);
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 25px rgba(255, 255, 255, 0.1);
 }
 
 .card::before {
     content: '';
     position: absolute;
     top: 0;
-    left: 0;
+    left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.02), transparent);
-    transform: translateX(-100%);
-    transition: transform 0.5s ease;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+    transform: skewX(-15deg);
+    transition: left 0.7s ease;
 }
 
 .card:hover::before {
-    transform: translateX(100%);
-}
-
-.card:hover {
-    border-color: rgba(255, 255, 255, 0.25);
-    transform: translateY(-3px);
+    left: 100%;
 }
 
 .card h2 {
-    margin-bottom: 16px;
-    font-size: 1.35rem;
+    margin-bottom: 18px;
+    font-size: 1.6rem;
     font-weight: 600;
+    letter-spacing: -0.3px;
     border-left: 3px solid #ffffff;
-    padding-left: 12px;
-    color: #ffffff;
+    padding-left: 14px;
+    background: linear-gradient(135deg, #fff, #cccccc);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
 }
 
 .card p {
-    line-height: 1.5;
-    margin-bottom: 18px;
+    line-height: 1.6;
+    margin-bottom: 20px;
     color: #bbbbbb;
     font-weight: 300;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
 }
 
 .card ul {
@@ -404,48 +444,63 @@ header p {
 }
 
 .card ul li {
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     color: #cccccc;
     font-weight: 300;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
 }
 
-.dot {
+.glow-dot {
     display: inline-block;
-    width: 4px;
-    height: 4px;
+    width: 6px;
+    height: 6px;
     background: #ffffff;
     border-radius: 50%;
-    opacity: 0.6;
-    transition: all 0.2s ease;
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
+    animation: dotGlow 1.5s ease-in-out infinite;
 }
 
-.card ul li:hover .dot {
-    opacity: 1;
-    transform: scale(1.5);
+@keyframes dotGlow {
+    0%, 100% {
+        opacity: 0.5;
+        transform: scale(1);
+        box-shadow: 0 0 2px white;
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.3);
+        box-shadow: 0 0 10px white;
+    }
 }
 
-/* Buttons */
+.card ul li strong {
+    color: #ffffff;
+    font-weight: 500;
+}
+
+/* BUTTONS */
 .button {
     display: inline-block;
-    background: transparent;
+    background: #000000;
     color: white;
-    padding: 10px 24px;
+    padding: 12px 28px;
     text-decoration: none;
     border-radius: 40px;
-    font-weight: 600;
-    font-size: 0.8rem;
-    letter-spacing: 1px;
-    transition: all 0.3s ease;
-    border: 1.5px solid rgba(255, 255, 255, 0.4);
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 1.5px;
+    transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    border: 1.5px solid rgba(255, 255, 255, 0.6);
     cursor: pointer;
     text-transform: uppercase;
     position: relative;
     overflow: hidden;
     z-index: 1;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
 }
 
 .button::before {
@@ -455,87 +510,113 @@ header p {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: rgba(255, 255, 255, 0.08);
-    transition: left 0.4s ease;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease;
     z-index: -1;
 }
 
 .button:hover::before {
-    left: 0;
+    left: 100%;
 }
 
 .button:hover {
     border-color: #ffffff;
-    transform: scale(1.01);
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.5), 0 0 12px rgba(255, 255, 255, 0.3);
+    transform: scale(1.03);
+    background: #111111;
 }
 
-.secondary {
-    border-color: rgba(255, 255, 255, 0.25);
+.neon-btn {
+    border: 1.5px solid #ffffff;
+    background: #000000;
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.3);
 }
 
-/* Links */
-.link-list {
-    list-style: none;
-    margin: 15px 0;
+.neon-btn:hover {
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.7);
 }
 
-.link-list li {
-    margin: 12px 0;
+.secondary-neon {
+    border: 1.5px solid #aaaaaa;
+    background: #0a0a0a;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
 }
 
-.page-link {
+.secondary-neon:hover {
+    border-color: #ffffff;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+}
+
+/* Futuristic Links */
+.futuristic-link {
     color: #ffffff;
     text-decoration: none;
-    font-weight: 500;
+    font-weight: 600;
+    letter-spacing: 0.8px;
     position: relative;
-    padding: 3px 0;
-    transition: 0.2s;
-    font-size: 0.95rem;
+    padding: 4px 0;
+    transition: 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
     opacity: 0.8;
 }
 
-.page-link::after {
+.futuristic-link::after {
     content: '';
     position: absolute;
     bottom: 0;
     left: 0;
     width: 0%;
-    height: 1px;
+    height: 2px;
     background: #ffffff;
-    transition: width 0.25s;
+    transition: width 0.3s;
+    box-shadow: 0 0 6px white;
 }
 
-.page-link:hover::after {
+.futuristic-link:hover::after {
     width: 100%;
 }
 
-.page-link:hover {
+.futuristic-link:hover {
     opacity: 1;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    transform: translateX(5px);
+}
+
+.link-list {
+    list-style: none;
+    margin: 20px 0;
+}
+
+.link-list li {
+    margin: 15px 0;
 }
 
 .button-group {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 15px;
     justify-content: center;
     align-items: center;
-    margin-top: 8px;
+    margin-top: 10px;
 }
 
 /* Footer */
 footer {
     text-align: center;
-    padding: 25px 20px;
-    color: #555;
+    padding: 30px 20px;
+    color: #666;
     margin-top: 40px;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    font-size: 0.7rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 0.75rem;
     letter-spacing: 0.5px;
 }
 
 /* Scrollbar */
 ::-webkit-scrollbar {
-    width: 6px;
+    width: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -543,12 +624,12 @@ footer {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #333;
-    border-radius: 3px;
+    background: linear-gradient(180deg, #444, #222);
+    border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #555;
+    background: #666;
 }
 
 ::selection {
@@ -556,20 +637,29 @@ footer {
     color: #ffffff;
 }
 
-/* Mobile optimizations */
+/* Responsive */
 @media (max-width: 768px) {
     .container {
-        padding: 15px;
+        padding: 15px 20px 30px 20px;
+    }
+    
+    h1 {
+        font-size: 2.2rem;
     }
     
     .content {
-        gap: 18px;
-        margin: 30px 0;
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .card {
+        padding: 22px;
+        animation: none;
     }
     
     .button {
-        padding: 8px 18px;
-        font-size: 0.7rem;
+        padding: 10px 20px;
+        font-size: 0.75rem;
     }
     
     .edge-glow {
@@ -580,21 +670,30 @@ footer {
         border-radius: 16px;
     }
     
-    .status-badge {
-        padding: 4px 14px;
+    .top-logo {
+        top: 15px;
+        right: 20px;
+        padding: 5px 12px;
     }
     
-    .status-text {
+    .logo-text {
+        font-size: 0.7rem;
+    }
+    
+    .logo-sub {
         font-size: 0.5rem;
     }
     
-    .progress-notice {
-        font-size: 0.55rem;
-        padding: 5px 12px;
+    .float-text, .float-text-delay {
+        animation: none;
+    }
+    
+    .float-card {
+        animation: none;
     }
 }
 
 #linkButton {
     width: 100%;
-    margin-top: 8px;
+    margin-top: 10px;
 }
