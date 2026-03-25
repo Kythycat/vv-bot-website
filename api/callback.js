@@ -40,29 +40,27 @@ module.exports = async (req, res) => {
         const robloxId = userRes.data.sub;
         const robloxName = userRes.data.name || userRes.data.preferred_username;
         
-        // Call your bot's webhook endpoint
+        // Call your bot's webhook
         const botWebhookUrl = process.env.BOT_WEBHOOK_URL;
         
-        if (botWebhookUrl) {
-            try {
-                await axios.post(botWebhookUrl, {
-                    discordId: discordId,
-                    robloxId: robloxId,
-                    robloxName: robloxName
-                }, { timeout: 10000 });
-            } catch (webhookError) {
-                console.error('Webhook error:', webhookError.message);
-            }
+        if (!botWebhookUrl) {
+            return res.status(500).json({ error: 'BOT_WEBHOOK_URL not configured' });
         }
         
-        return res.json({ 
-            success: true, 
-            robloxName: robloxName,
-            robloxId: robloxId
-        });
+        const linkResponse = await axios.post(botWebhookUrl, {
+            discordId: discordId,
+            robloxId: robloxId,
+            robloxName: robloxName
+        }, { timeout: 10000 });
+        
+        // Return the response from your bot
+        return res.json(linkResponse.data);
         
     } catch (error) {
         console.error('OAuth error:', error.response?.data || error.message);
-        return res.status(500).json({ error: 'Authentication failed' });
+        return res.status(500).json({ 
+            success: false,
+            error: error.response?.data?.error_description || 'Authentication failed' 
+        });
     }
 };
