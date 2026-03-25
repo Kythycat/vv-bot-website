@@ -1,6 +1,7 @@
 const axios = require('axios');
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
+    // Enable CORS
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -53,14 +54,13 @@ module.exports = async (req, res) => {
             robloxName: robloxName
         }, { timeout: 10000 });
         
-        // Return the response from your bot
         return res.json(linkResponse.data);
         
     } catch (error) {
         console.error('OAuth error:', error.response?.data || error.message);
         return res.status(500).json({ 
             success: false,
-            error: error.response?.data?.error_description || 'Authentication failed' 
+            error: error.response?.data?.error_description || error.message || 'Authentication failed'
         });
     }
-};
+}
