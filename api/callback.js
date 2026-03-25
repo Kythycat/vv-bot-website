@@ -19,18 +19,14 @@ export default async function handler(req, res) {
     
     const { code, discordId } = req.body;
     
-    // Log for debugging (will appear in Vercel function logs)
     console.log('Callback received:', { code: code?.substring(0, 10), discordId });
     
     if (!code || !discordId) {
-        console.log('Missing parameters');
         return res.status(400).json({ error: 'Missing code or discordId' });
     }
     
     try {
         // Exchange code for Roblox token
-        console.log('Exchanging code with Roblox...');
-        
         const tokenParams = new URLSearchParams({
             client_id: process.env.ROBLOX_CLIENT_ID,
             client_secret: process.env.ROBLOX_CLIENT_SECRET,
@@ -41,8 +37,6 @@ export default async function handler(req, res) {
         const tokenRes = await axios.post('https://apis.roblox.com/oauth/v1/token', tokenParams, {
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
         });
-        
-        console.log('Token exchange successful');
         
         const accessToken = tokenRes.data.access_token;
         const userRes = await axios.get('https://apis.roblox.com/oauth/v1/userinfo', {
@@ -62,8 +56,6 @@ export default async function handler(req, res) {
             return res.status(500).json({ error: 'BOT_WEBHOOK_URL not configured' });
         }
         
-        console.log('Calling bot webhook:', botWebhookUrl);
-        
         const linkResponse = await axios.post(botWebhookUrl, {
             discordId: discordId,
             robloxId: robloxId,
@@ -78,8 +70,7 @@ export default async function handler(req, res) {
         console.error('OAuth error details:', {
             message: error.message,
             response: error.response?.data,
-            status: error.response?.status,
-            stack: error.stack
+            status: error.response?.status
         });
         
         return res.status(500).json({ 

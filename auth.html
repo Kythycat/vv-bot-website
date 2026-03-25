@@ -201,9 +201,6 @@
         const state = urlParams.get('state');
         const error = urlParams.get('error');
         
-        // Bot webhook URL
-        const BOT_WEBHOOK_URL = 'http://85.215.137.163:3000/api/link';
-        
         async function processOAuth() {
             if (error) {
                 document.getElementById('loading').style.display = 'none';
@@ -221,45 +218,26 @@
             console.log('Processing OAuth with code:', code.substring(0, 10) + '...', 'state:', state);
             
             try {
-                // Step 1: Exchange code for Roblox user info via your API
-                const exchangeResponse = await fetch('/api/exchange', {
+                // Call your callback.js API (NOT exchange.js)
+                const response = await fetch('/api/callback', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ code })
+                    body: JSON.stringify({ code, discordId: state })
                 });
                 
-                const exchangeData = await exchangeResponse.json();
+                const data = await response.json();
                 
-                if (!exchangeData.success) {
-                    throw new Error(exchangeData.error || 'Failed to verify Roblox account');
-                }
-                
-                console.log('Roblox user:', exchangeData.robloxName);
-                
-                // Step 2: Send to your bot's webhook
-                const linkResponse = await fetch(BOT_WEBHOOK_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        discordId: state,
-                        robloxId: exchangeData.robloxId,
-                        robloxName: exchangeData.robloxName
-                    })
-                });
-                
-                const linkData = await linkResponse.json();
-                
-                if (linkData.success) {
+                if (data.success) {
                     document.getElementById('loading').style.display = 'none';
                     document.getElementById('success').style.display = 'block';
-                    document.getElementById('robloxName').textContent = exchangeData.robloxName;
+                    document.getElementById('robloxName').textContent = data.robloxName;
                     setTimeout(() => window.close(), 5000);
-                } else if (linkData.membershipRequired) {
+                } else if (data.membershipRequired) {
                     document.getElementById('loading').style.display = 'none';
                     document.getElementById('membership').style.display = 'block';
-                    document.getElementById('robloxNameMembership').textContent = exchangeData.robloxName;
+                    document.getElementById('robloxNameMembership').textContent = data.robloxName;
                 } else {
-                    throw new Error(linkData.error || 'Linking failed');
+                    throw new Error(data.error || 'Linking failed');
                 }
                 
             } catch (err) {
