@@ -1,0 +1,7 @@
+{
+  "rewrites": [
+    { "source": "/auth", "destination": "/auth.html" },
+    { "source": "/terms", "destination": "/terms.html" },
+    { "source": "/privacy", "destination": "/privacy.html" }
+  ]
+}
