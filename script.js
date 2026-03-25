@@ -3,20 +3,31 @@
  * Handles OAuth authentication and page transitions with history support
  */
 
+// Configuration
+const CONFIG = {
+    clientId: '5689277493290998256',
+    redirectUri: window.location.origin + '/auth',
+    scope: 'openid profile'
+};
+
+// Get Discord ID from URL parameter (if coming from Discord)
 const urlParams = new URLSearchParams(window.location.search);
 const discordId = urlParams.get('discordId');
 
+/**
+ * Redirect to Roblox OAuth authorization page
+ */
 function redirectToAuth() {
-    const clientId = '5689277493290998256';
-    const redirectUri = encodeURIComponent('https://amanda-conducting-argued-golden.trycloudflare.com/callback');
-    const scope = 'openid profile';
     const state = discordId || 'default';
     
-    const authUrl = `https://apis.roblox.com/oauth/v1/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&response_type=code&state=${state}`;
+    const authUrl = `https://apis.roblox.com/oauth/v1/authorize?client_id=${CONFIG.clientId}&redirect_uri=${encodeURIComponent(CONFIG.redirectUri)}&scope=${CONFIG.scope}&response_type=code&state=${state}`;
     
     window.location.href = authUrl;
 }
 
+/**
+ * Page transition for internal links
+ */
 document.addEventListener('DOMContentLoaded', () => {
     const navLinks = document.querySelectorAll('a[data-navigation="true"]');
     
@@ -46,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loadPage(targetPage, true);
     });
     
-    console.log(' Velvet Vendetta - System Online');
+    console.log('✨ Velvet Vendetta - System Online');
 });
 
 function loadPage(page, isHistoryNavigation = false) {
