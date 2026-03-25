@@ -5,14 +5,22 @@
 
 // Configuration
 const CONFIG = {
-    clientId: '5689277493290998256',
-    redirectUri: window.location.origin + '/auth',
+    clientId: '8678137542506017326',
+    redirectUri: 'https://velvet-vendetta-puce.vercel.app/auth',
     scope: 'openid profile'
 };
 
 // Get Discord ID from URL parameter (if coming from Discord)
 const urlParams = new URLSearchParams(window.location.search);
 const discordId = urlParams.get('discordId');
+
+// Show Discord context if coming from Discord
+if (discordId) {
+    const contextDiv = document.getElementById('discordContext');
+    if (contextDiv) {
+        contextDiv.style.display = 'block';
+    }
+}
 
 /**
  * Redirect to Roblox OAuth authorization page
@@ -57,7 +65,8 @@ document.addEventListener('DOMContentLoaded', () => {
         loadPage(targetPage, true);
     });
     
-    console.log('✨ Velvet Vendetta - System Online');
+    console.log('Velvet Vendetta - System Online');
+    console.log('OAuth Redirect URI:', CONFIG.redirectUri);
 });
 
 function loadPage(page, isHistoryNavigation = false) {

@@ -697,3 +697,57 @@ footer {
     width: 100%;
     margin-top: 10px;
 }
+
+/* Discord Context Message */
+.discord-context {
+    margin: 20px auto 0;
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 40px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    backdrop-filter: blur(4px);
+    animation: contextPulse 2s ease-in-out infinite;
+}
+
+.context-icon {
+    font-size: 1.1rem;
+    animation: iconPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes contextPulse {
+    0%, 100% {
+        border-color: rgba(255, 255, 255, 0.2);
+        box-shadow: 0 0 5px rgba(255, 255, 255, 0.05);
+    }
+    50% {
+        border-color: rgba(255, 255, 255, 0.45);
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
+    }
+}
+
+@keyframes iconPulse {
+    0%, 100% {
+        opacity: 0.6;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+}
+
+@media (max-width: 768px) {
+    .discord-context {
+        font-size: 0.7rem;
+        padding: 8px 16px;
+    }
+    
+    .context-icon {
+        font-size: 0.9rem;
+    }
+}
