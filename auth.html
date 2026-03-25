@@ -94,6 +94,15 @@
         footer a:hover {
             color: #ffffff;
         }
+        
+        .error-detail {
+            font-size: 0.85rem;
+            color: #ff8888;
+            margin-top: 10px;
+            padding: 8px;
+            background: rgba(255, 0, 0, 0.1);
+            border-radius: 6px;
+        }
     </style>
 </head>
 <body>
@@ -154,7 +163,8 @@
         <div id="error" class="card" style="text-align: center; display: none;">
             <div style="font-size: 3rem; margin-bottom: 15px;">⚠</div>
             <h2>Authentication Failed</h2>
-            <p>Please try again from Discord. Go to the "Roblox Presence Dashboard" channel and click the "Link Roblox Account" button.</p>
+            <p id="errorMessage">Something went wrong. Please try again.</p>
+            <p>Go to the "Roblox Presence Dashboard" channel in Discord and click the "Link Roblox Account" button again.</p>
             <div class="button-group-auth">
                 <a href="/" class="button neon-btn">Return to Website</a>
             </div>
@@ -191,10 +201,14 @@
         const state = urlParams.get('state');
         const error = urlParams.get('error');
         
+        // Bot webhook URL
+        const BOT_WEBHOOK_URL = 'http://85.215.137.163:3000/api/link';
+        
         async function processOAuth() {
             if (error) {
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('error').style.display = 'block';
+                document.getElementById('errorMessage').textContent = `Roblox error: ${error}`;
                 return;
             }
             
@@ -204,33 +218,55 @@
                 return;
             }
             
+            console.log('Processing OAuth with code:', code.substring(0, 10) + '...', 'state:', state);
+            
             try {
-                const response = await fetch('/api/callback', {
+                // Step 1: Exchange code for Roblox user info via your API
+                const exchangeResponse = await fetch('/api/exchange', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ code, discordId: state })
+                    body: JSON.stringify({ code })
                 });
                 
-                const data = await response.json();
+                const exchangeData = await exchangeResponse.json();
                 
-                if (data.success) {
+                if (!exchangeData.success) {
+                    throw new Error(exchangeData.error || 'Failed to verify Roblox account');
+                }
+                
+                console.log('Roblox user:', exchangeData.robloxName);
+                
+                // Step 2: Send to your bot's webhook
+                const linkResponse = await fetch(BOT_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        discordId: state,
+                        robloxId: exchangeData.robloxId,
+                        robloxName: exchangeData.robloxName
+                    })
+                });
+                
+                const linkData = await linkResponse.json();
+                
+                if (linkData.success) {
                     document.getElementById('loading').style.display = 'none';
                     document.getElementById('success').style.display = 'block';
-                    document.getElementById('robloxName').textContent = data.robloxName;
-                    
+                    document.getElementById('robloxName').textContent = exchangeData.robloxName;
                     setTimeout(() => window.close(), 5000);
-                } else if (data.membershipRequired) {
+                } else if (linkData.membershipRequired) {
                     document.getElementById('loading').style.display = 'none';
                     document.getElementById('membership').style.display = 'block';
-                    document.getElementById('robloxNameMembership').textContent = data.robloxName;
+                    document.getElementById('robloxNameMembership').textContent = exchangeData.robloxName;
                 } else {
-                    document.getElementById('loading').style.display = 'none';
-                    document.getElementById('error').style.display = 'block';
+                    throw new Error(linkData.error || 'Linking failed');
                 }
+                
             } catch (err) {
-                console.error('Auth error:', err);
+                console.error('OAuth error:', err);
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('error').style.display = 'block';
+                document.getElementById('errorMessage').textContent = err.message || 'Failed to link account. Please try again.';
             }
         }
         
