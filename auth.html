@@ -94,6 +94,25 @@
         footer a:hover {
             color: #ffffff;
         }
+        
+        .config-note {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 15px;
+            font-size: 0.7rem;
+            color: #ffaa66;
+            text-align: center;
+        }
+        
+        .config-note code {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            color: #ffffff;
+        }
     </style>
 </head>
 <body>
@@ -192,6 +211,23 @@
         const state = urlParams.get('state');
         const error = urlParams.get('error');
         
+        // ============================================================
+        // IMPORTANT: UPDATE THIS URL EVERY TIME YOUR BOT RESTARTS
+        // ============================================================
+        // 
+        // Step 1: After restarting your bot on Wispyte, check the logs
+        // Step 2: Find the tunnel URL that looks like:
+        //         https://something.trycloudflare.com
+        // Step 3: Copy that URL and paste it below between the quotes
+        //         Example: 'https://abc123-xyz.trycloudflare.com'
+        // ============================================================
+        
+        const BOT_URL = 'https://canyon-constant-constraints-marina.trycloudflare.com';  // <--- UPDATE THIS URL!
+        
+        // ============================================================
+        // Example: const BOT_URL = 'https://unity-colleges-question-outcome.trycloudflare.com';
+        // ============================================================
+        
         async function processOAuth() {
             if (error) {
                 document.getElementById('loading').style.display = 'none';
@@ -224,8 +260,8 @@
                 
                 console.log('Roblox user:', exchangeData.robloxName);
                 
-                // Step 2: Call the Vercel proxy (not the bot directly)
-                const proxyResponse = await fetch('/api/proxy', {
+                // Step 2: Call your bot using the tunnel URL
+                const botResponse = await fetch(`${BOT_URL}/api/link`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -235,7 +271,7 @@
                     })
                 });
                 
-                const linkData = await proxyResponse.json();
+                const linkData = await botResponse.json();
                 
                 if (linkData.success) {
                     document.getElementById('loading').style.display = 'none';
