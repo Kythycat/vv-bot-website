@@ -209,7 +209,7 @@
             console.log('Processing OAuth with code:', code.substring(0, 10) + '...', 'state:', state);
             
             try {
-                // First, exchange code for Roblox user info
+                // Step 1: Exchange code for Roblox user info
                 const exchangeResponse = await fetch('/api/exchange-code', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -224,10 +224,8 @@
                 
                 console.log('Roblox user:', exchangeData.robloxName);
                 
-                // Now call your bot directly (using port 3000)
-                const botUrl = 'http://85.215.137.163:3000/api/link';
-                
-                const linkResponse = await fetch(botUrl, {
+                // Step 2: Call the Vercel proxy (not the bot directly)
+                const proxyResponse = await fetch('/api/proxy', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -237,7 +235,7 @@
                     })
                 });
                 
-                const linkData = await linkResponse.json();
+                const linkData = await proxyResponse.json();
                 
                 if (linkData.success) {
                     document.getElementById('loading').style.display = 'none';
