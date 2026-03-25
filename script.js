@@ -5,7 +5,7 @@
 
 // Configuration
 const CONFIG = {
-    clientId: '8678137542506017326',
+    clientId: '5689277493290998256',
     redirectUri: 'https://velvet-vendetta-puce.vercel.app/auth',
     scope: 'openid profile'
 };
