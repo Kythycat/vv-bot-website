@@ -1,6 +1,6 @@
 /**
  * Velvet Vendetta - Space Animation System
- * Enhanced comet particles with trailing effects + Space Physics
+ * Enhanced comet particles with trailing effects
  */
 
 class SpaceBackground {
@@ -11,15 +11,16 @@ class SpaceBackground {
         this.ctx = this.canvas.getContext('2d');
         this.stars = [];
         this.comets = [];
-        this.starCount = 250;
+        this.starCount = 200;
         this.animationId = null;
         this.isMobile = window.innerWidth < 768;
         
         if (this.isMobile) {
-            this.starCount = 120;
+            this.starCount = 100;
         }
         
         this.init();
+        this.observeThemeChanges();
     }
     
     init() {
@@ -33,6 +34,41 @@ class SpaceBackground {
         
         this.animate();
         this.startCometGenerator();
+    }
+    
+    observeThemeChanges() {
+        // Watch for theme changes to update star colors
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.attributeName === 'data-theme') {
+                    this.updateStarColors();
+                }
+            });
+        });
+        
+        observer.observe(document.body, { attributes: true });
+    }
+    
+    getStarColor() {
+        const theme = document.body.getAttribute('data-theme');
+        if (theme === 'dark') {
+            return 'rgba(255, 255, 255, ';
+        } else {
+            return 'rgba(0, 0, 0, ';
+        }
+    }
+    
+    getCometColor() {
+        const theme = document.body.getAttribute('data-theme');
+        if (theme === 'dark') {
+            return { particle: 'rgba(255, 255, 255, ', core: 'rgba(255, 255, 255, 0.9)' };
+        } else {
+            return { particle: 'rgba(0, 0, 0, ', core: 'rgba(0, 0, 0, 0.8)' };
+        }
+    }
+    
+    updateStarColors() {
+        // Stars will use new colors on next draw
     }
     
     resizeCanvas() {
@@ -59,8 +95,6 @@ class SpaceBackground {
             x: -100,
             y: Math.random() * (this.canvas.height * 0.5) + 50,
             speed: 3.5 + Math.random() * 2,
-            length: 60 + Math.random() * 40,
-            width: 2 + Math.random() * 2,
             particles: [],
             active: true,
             age: 0,
@@ -144,22 +178,26 @@ class SpaceBackground {
     }
     
     drawStars() {
+        const starColor = this.getStarColor();
+        
         for (let star of this.stars) {
             this.ctx.beginPath();
             this.ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-            this.ctx.fillStyle = `rgba(255, 255, 255, ${star.currentAlpha || star.alpha})`;
+            this.ctx.fillStyle = `${starColor}${star.currentAlpha || star.alpha})`;
             this.ctx.fill();
             
             if (star.radius > 1.5) {
                 this.ctx.beginPath();
                 this.ctx.arc(star.x, star.y, star.radius * 1.5, 0, Math.PI * 2);
-                this.ctx.fillStyle = `rgba(255, 255, 255, ${(star.currentAlpha || star.alpha) * 0.3})`;
+                this.ctx.fillStyle = `${starColor}${(star.currentAlpha || star.alpha) * 0.3})`;
                 this.ctx.fill();
             }
         }
     }
     
     drawComets() {
+        const cometColor = this.getCometColor();
+        
         for (const comet of this.comets) {
             for (let i = 0; i < comet.particles.length; i++) {
                 const p = comet.particles[i];
@@ -170,8 +208,8 @@ class SpaceBackground {
                 this.ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
                 
                 const gradient = this.ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, size * 2);
-                gradient.addColorStop(0, `rgba(255, 255, 255, ${alpha * 0.9})`);
-                gradient.addColorStop(1, `rgba(255, 255, 255, 0)`);
+                gradient.addColorStop(0, `${cometColor.particle}${alpha * 0.9})`);
+                gradient.addColorStop(1, `${cometColor.particle}0)`);
                 this.ctx.fillStyle = gradient;
                 this.ctx.fill();
             }
@@ -179,15 +217,15 @@ class SpaceBackground {
             this.ctx.beginPath();
             this.ctx.arc(comet.x, comet.y, 3.5, 0, Math.PI * 2);
             const headGradient = this.ctx.createRadialGradient(comet.x, comet.y, 0, comet.x, comet.y, 8);
-            headGradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
-            headGradient.addColorStop(0.5, 'rgba(255, 255, 255, 0.7)');
-            headGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+            headGradient.addColorStop(0, cometColor.core);
+            headGradient.addColorStop(0.5, `${cometColor.particle}0.7)`);
+            headGradient.addColorStop(1, `${cometColor.particle}0)`);
             this.ctx.fillStyle = headGradient;
             this.ctx.fill();
             
             this.ctx.beginPath();
             this.ctx.arc(comet.x, comet.y, 2, 0, Math.PI * 2);
-            this.ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+            this.ctx.fillStyle = cometColor.core;
             this.ctx.fill();
         }
     }
@@ -219,73 +257,7 @@ class SpaceBackground {
     }
 }
 
-/**
- * Velvet Vendetta - Space Physics System
- * Adds floating/parallax effects to elements
- */
-class SpacePhysics {
-    constructor() {
-        this.elements = [];
-        this.scrollY = 0;
-        this.mouseX = 0;
-        this.mouseY = 0;
-        this.init();
-    }
-    
-    init() {
-        this.elements = document.querySelectorAll('.float-card, .float-text, .float-text-delay');
-        
-        window.addEventListener('scroll', () => {
-            this.scrollY = window.scrollY;
-            this.updatePhysics();
-        });
-        
-        document.addEventListener('mousemove', (e) => {
-            this.mouseX = (e.clientX / window.innerWidth) - 0.5;
-            this.mouseY = (e.clientY / window.innerHeight) - 0.5;
-            this.updateMouseParallax();
-        });
-        
-        this.updatePhysics();
-        this.startAutoFloat();
-    }
-    
-    updatePhysics() {
-        this.elements.forEach((el, index) => {
-            const speed = parseFloat(el.getAttribute('data-speed')) || 0.3;
-            const yOffset = this.scrollY * speed * 0.1;
-            el.style.transform = `translateY(${yOffset}px)`;
-        });
-    }
-    
-    updateMouseParallax() {
-        const cards = document.querySelectorAll('.card');
-        cards.forEach((card, index) => {
-            const speed = 0.02 + (index * 0.005);
-            const xOffset = this.mouseX * 15 * speed;
-            const yOffset = this.mouseY * 15 * speed;
-            card.style.setProperty('--mouse-x', `${xOffset}px`);
-            card.style.setProperty('--mouse-y', `${yOffset}px`);
-        });
-    }
-    
-    startAutoFloat() {
-        setInterval(() => {
-            this.elements.forEach((el, index) => {
-                if (!el.matches(':hover')) {
-                    const floatSpeed = 0.5 + (index * 0.1);
-                    const floatOffset = Math.sin(Date.now() * 0.002 * floatSpeed) * 3;
-                    const scrollOffset = this.scrollY * (parseFloat(el.getAttribute('data-speed')) || 0.3) * 0.1;
-                    el.style.transform = `translateY(${scrollOffset + floatOffset}px)`;
-                }
-            });
-        }, 50);
-    }
-}
-
-/**
- * Velvet Vendetta - Animation System
- */
+// Rest of the animations class remains the same...
 class VelvetAnimations {
     constructor() {
         this.particles = [];
@@ -328,7 +300,6 @@ class VelvetAnimations {
             line.style.left = `${12 + (i * 15)}%`;
             line.style.animationDelay = `${i * 1.2}s`;
             line.style.animationDuration = `${9 + i * 2}s`;
-            line.style.opacity = `${0.2 + Math.random() * 0.3}`;
             if (this.movingLinesContainer) {
                 this.movingLinesContainer.appendChild(line);
             }
@@ -345,7 +316,7 @@ class VelvetAnimations {
                 position: absolute;
                 width: 150%;
                 height: 1px;
-                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+                background: linear-gradient(90deg, transparent, var(--line-color, rgba(0,0,0,0.2)), transparent);
                 top: ${25 + i * 22}%;
                 left: -40%;
                 transform: rotate(${18 + i * 6}deg);
@@ -378,6 +349,15 @@ class VelvetAnimations {
         this.animateParticles();
     }
     
+    getParticleColor() {
+        const theme = document.body.getAttribute('data-theme');
+        if (theme === 'dark') {
+            return 'rgba(255, 255, 255, 0.7)';
+        } else {
+            return 'rgba(0, 0, 0, 0.6)';
+        }
+    }
+    
     initParticleSystem() {
         const container = document.body;
         
@@ -391,14 +371,13 @@ class VelvetAnimations {
                 position: fixed;
                 width: ${size}px;
                 height: ${size}px;
-                background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.4) 100%);
+                background: ${this.getParticleColor()};
                 border-radius: 50%;
                 pointer-events: none;
                 z-index: 9998;
                 left: 0;
                 top: 0;
                 opacity: 0;
-                box-shadow: 0 0 ${size}px rgba(255,255,255,0.5);
                 will-change: left, top;
                 transition: opacity 0.05s ease;
             `;
@@ -411,6 +390,20 @@ class VelvetAnimations {
             container.appendChild(particle);
             this.particles.push(particle);
         }
+        
+        // Update particle colors when theme changes
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.attributeName === 'data-theme') {
+                    const newColor = this.getParticleColor();
+                    this.particles.forEach(particle => {
+                        particle.style.background = newColor;
+                    });
+                }
+            });
+        });
+        
+        observer.observe(document.body, { attributes: true });
     }
     
     animateParticles() {
@@ -465,18 +458,20 @@ class VelvetAnimations {
             const trailDot = document.createElement('div');
             trailDot.className = 'cursor-trail';
             const size = Math.random() * 4 + 2;
+            const theme = document.body.getAttribute('data-theme');
+            const trailColor = theme === 'dark' ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.5)';
+            
             trailDot.style.cssText = `
                 position: fixed;
                 width: ${size}px;
                 height: ${size}px;
-                background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.3) 100%);
+                background: ${trailColor};
                 border-radius: 50%;
                 pointer-events: none;
                 z-index: 9999;
                 left: ${e.clientX}px;
                 top: ${e.clientY}px;
                 opacity: 0.6;
-                box-shadow: 0 0 ${size}px rgba(255,255,255,0.4);
                 transition: opacity 0.2s ease;
             `;
             document.body.appendChild(trailDot);
@@ -551,7 +546,13 @@ class VelvetAnimations {
                     if (intensity <= 0.08) increasing = true;
                 }
                 
-                edgeGlow.style.borderColor = `rgba(255, 255, 255, ${0.12 + intensity})`;
+                const theme = document.body.getAttribute('data-theme');
+                const borderAlpha = theme === 'dark' ? 0.12 + intensity : 0.08 + intensity * 0.5;
+                edgeGlow.style.borderColor = `rgba(0, 0, 0, ${borderAlpha})`;
+                
+                if (theme === 'dark') {
+                    edgeGlow.style.borderColor = `rgba(255, 255, 255, ${0.12 + intensity})`;
+                }
             }, 100);
         }
     }
@@ -582,7 +583,9 @@ class VelvetAnimations {
                 const cards = document.querySelectorAll('.card');
                 const randomCard = cards[Math.floor(Math.random() * cards.length)];
                 if (randomCard) {
-                    randomCard.style.boxShadow = '0 0 35px rgba(255, 255, 255, 0.15)';
+                    const theme = document.body.getAttribute('data-theme');
+                    const shadowColor = theme === 'dark' ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.1)';
+                    randomCard.style.boxShadow = `0 0 35px ${shadowColor}`;
                     setTimeout(() => {
                         randomCard.style.boxShadow = '';
                     }, 400);
@@ -599,13 +602,12 @@ class VelvetAnimations {
 }
 
 let spaceBg = null;
-let spacePhysics = null;
 let animations = null;
 
 document.addEventListener('DOMContentLoaded', () => {
     spaceBg = new SpaceBackground();
-    spacePhysics = new SpacePhysics();
     animations = new VelvetAnimations();
+    console.log('Velvet Vendetta - Space System Active');
 });
 
 window.addEventListener('beforeunload', () => {

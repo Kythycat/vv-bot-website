@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Velvet Vendetta - Roblox Presence Bot</title>
+    <title>Velvet Vendetta - Roblox Clan Community</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,6 +12,12 @@
     <div class="gradient-bg"></div>
     <div class="edge-glow"></div>
     <div class="moving-lines"></div>
+    
+    <div class="settings-button">
+        <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark mode">
+            <span class="toggle-icon">🌙</span>
+        </button>
+    </div>
     
     <div class="top-logo">
         <div class="logo-text">VELVET VENDETTA</div>
@@ -22,55 +28,65 @@
         <header>
             <div class="status-badge">
                 <span class="pulse-dot"></span>
-                <span class="status-text">DEVELOPMENT</span>
+                <span class="status-text">ACTIVE COMMUNITY</span>
             </div>
-            <h1 class="float-text">Vendetta Bot</h1>
+            <h1 class="float-text">Velvet Vendetta</h1>
             <div class="glow-line"></div>
-            <p class="float-text-delay">Roblox Presence & Help Request System for Velvet Vendetta Community</p>
-            
-            <!-- Discord Context Message (hidden by default, shows when coming from Discord) -->
-            <div id="discordContext" class="discord-context" style="display: none;">
-                <span class="context-icon">⟡</span>
-                <span>Welcome back! Your Discord account is ready to link with Roblox.</span>
-            </div>
-            
-            <div class="progress-notice">
-                <span>⚠</span> WEBSITE UNDER CONSTRUCTION <span>⚠</span>
-            </div>
+            <p class="float-text-delay">Official Roblox Clan for Legends Battlegrounds</p>
         </header>
 
         <div class="content">
             <div class="card float-card" data-speed="0.5">
-                <h2>Link Roblox Account</h2>
-                <p>Connect your Roblox account to show your online status and receive help requests in the Velvet Vendetta Discord server.</p>
-                <button id="linkButton" class="button neon-btn" onclick="redirectToAuth()">Link Roblox Account</button>
+                <h2>Community Status</h2>
+                <div class="stats-container">
+                    <div class="stat-item">
+                        <span class="stat-label">Server Status</span>
+                        <span class="stat-value active-status">Active</span>
+                    </div>
+                </div>
             </div>
 
             <div class="card float-card" data-speed="0.3">
-                <h2>Core Features</h2>
-                <ul>
-                    <li><span class="glow-dot"></span> Live Roblox presence tracking</li>
-                    <li><span class="glow-dot"></span> Help request system with images</li>
-                    <li><span class="glow-dot"></span> Role-based permissions</li>
-                    <li><span class="glow-dot"></span> Secure OAuth2 authentication</li>
-                </ul>
+                <h2>About Us</h2>
+                <p>Velvet Vendetta is a dedicated Roblox clan for Legends Battlegrounds. We are a community of skilled players who strive for excellence in combat and teamwork. Our clan focuses on creating a positive and competitive environment where members can grow and improve together.</p>
+                <p>Whether you are a veteran player or just starting your journey in Legends Battlegrounds, Velvet Vendetta welcomes you to join our ranks.</p>
             </div>
 
             <div class="card float-card" data-speed="0.4">
-                <h2>Resources</h2>
-                <ul class="link-list">
-                    <li><a href="terms.html" class="futuristic-link" data-navigation="true">Terms of Service</a></li>
-                    <li><a href="privacy.html" class="futuristic-link" data-navigation="true">Privacy Policy</a></li>
+                <h2>Game Information</h2>
+                <p>Legends Battlegrounds is a competitive Roblox game where players battle to prove their skills. As a member of Velvet Vendetta, you will have access to:</p>
+                <ul>
+                    <li><span class="glow-dot"></span> Organized training sessions</li>
+                    <li><span class="glow-dot"></span> Clan wars and events</li>
+                    <li><span class="glow-dot"></span> Experienced mentors</li>
+                    <li><span class="glow-dot"></span> Exclusive clan strategies</li>
                 </ul>
+                <div class="game-link">
+                    <a href="https://www.roblox.com/games/15269951959/Legends-Battlegrounds" class="button secondary" target="_blank">Play Legends Battlegrounds</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="join-section">
+            <div class="card join-card float-card" data-speed="0.2">
+                <h2>Join Our Community</h2>
+                <p>Ready to become part of Velvet Vendetta? Join our Discord server to connect with members, participate in events, and start your journey with us.</p>
+                <div class="invite-container">
+                    <a href="https://discord.gg/qvXmd5gz6z" class="button primary" target="_blank">Join Discord Server</a>
+                </div>
+                <div class="bot-link">
+                    <p>Already a member? <a href="bot.html" class="futuristic-link">Link your Roblox account</a> to show your presence in the server.</p>
+                </div>
             </div>
         </div>
 
         <footer>
-            <p>© 2026 Velvet Vendetta — Roblox Community</p>
+            <p>© 2026 Velvet Vendetta — Legends Battlegrounds Roblox Clan</p>
+            <p class="footer-links"><a href="terms.html">Terms of Service</a> | <a href="privacy.html">Privacy Policy</a> | <a href="bot.html">Bot Dashboard</a></p>
         </footer>
     </div>
-
-    <script src="script.js"></script>
+    
     <script src="animations.js"></script>
+    <script src="theme.js"></script>
 </body>
 </html>

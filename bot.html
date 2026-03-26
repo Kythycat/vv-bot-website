@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Vendetta Bot - Roblox Presence System | Velvet Vendetta</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <canvas id="spaceCanvas"></canvas>
+    <div class="noise-overlay"></div>
+    <div class="gradient-bg"></div>
+    <div class="edge-glow"></div>
+    <div class="moving-lines"></div>
+    
+    <div class="settings-button">
+        <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark mode">
+            <span class="toggle-icon">🌙</span>
+        </button>
+    </div>
+    
+    <div class="top-logo">
+        <div class="logo-text">VELVET VENDETTA</div>
+        <div class="logo-sub">LBG CLAN</div>
+    </div>
+    
+    <div class="container">
+        <header>
+            <div class="status-badge">
+                <span class="pulse-dot"></span>
+                <span class="status-text">DEVELOPMENT</span>
+            </div>
+            <h1 class="float-text">Vendetta Bot</h1>
+            <div class="glow-line"></div>
+            <p class="float-text-delay">Roblox Presence & Help Request System for Velvet Vendetta Community</p>
+            
+            <div id="discordContext" class="discord-context" style="display: none;">
+                <span class="context-icon">⟡</span>
+                <span>Welcome back! Your Discord account is ready to link with Roblox.</span>
+            </div>
+            
+            <div class="progress-notice">
+                <span>⚠</span> WEBSITE UNDER CONSTRUCTION <span>⚠</span>
+            </div>
+        </header>
+
+        <div class="content">
+            <div class="card float-card" data-speed="0.5">
+                <h2>Link Roblox Account</h2>
+                <p>Connect your Roblox account to show your online status and receive help requests in the Velvet Vendetta Discord server.</p>
+                <button id="linkButton" class="button primary" onclick="redirectToAuth()">Link Roblox Account</button>
+            </div>
+
+            <div class="card float-card" data-speed="0.3">
+                <h2>Core Features</h2>
+                <ul>
+                    <li><span class="glow-dot"></span> Live Roblox presence tracking</li>
+                    <li><span class="glow-dot"></span> Help request system with images</li>
+                    <li><span class="glow-dot"></span> Role-based permissions</li>
+                    <li><span class="glow-dot"></span> Secure OAuth2 authentication</li>
+                </ul>
+            </div>
+
+            <div class="card float-card" data-speed="0.4">
+                <h2>Resources</h2>
+                <ul class="link-list">
+                    <li><a href="terms.html" class="futuristic-link" data-navigation="true">Terms of Service</a></li>
+                    <li><a href="privacy.html" class="futuristic-link" data-navigation="true">Privacy Policy</a></li>
+                    <li><a href="index.html" class="futuristic-link" data-navigation="true">Community Home</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2026 Velvet Vendetta — Roblox Community</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="animations.js"></script>
+    <script src="theme.js"></script>
+</body>
+</html>

@@ -13,6 +13,12 @@
     <div class="edge-glow"></div>
     <div class="moving-lines"></div>
     
+    <div class="settings-button">
+        <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark mode">
+            <span class="toggle-icon">🌙</span>
+        </button>
+    </div>
+    
     <div class="top-logo">
         <div class="logo-text">VELVET VENDETTA</div>
         <div class="logo-sub">LBG CLAN</div>
@@ -63,18 +69,23 @@
                 <p>We reserve the right to restrict or terminate access for users who violate these terms.</p>
             </div>
 
-            <div class="card button-group float-card" data-speed="0.25">
-                <a href="index.html" class="button secondary-neon" data-navigation="true">← Back to Home</a>
-                <a href="privacy.html" class="button neon-btn" data-navigation="true">Privacy Policy</a>
+            <div class="card button-group-card" data-speed="0.25">
+                <div class="button-group">
+                    <a href="index.html" class="button secondary" data-navigation="true">Community Home</a>
+                    <a href="bot.html" class="button secondary" data-navigation="true">Bot Dashboard</a>
+                    <a href="privacy.html" class="button primary" data-navigation="true">Privacy Policy</a>
+                </div>
             </div>
         </div>
 
         <footer>
             <p>© 2026 Velvet Vendetta — Roblox Community</p>
+            <p class="footer-links"><a href="index.html">Community Home</a> | <a href="bot.html">Bot Dashboard</a> | <a href="privacy.html">Privacy Policy</a></p>
         </footer>
     </div>
 
     <script src="script.js"></script>
     <script src="animations.js"></script>
+    <script src="theme.js"></script>
 </body>
 </html>
