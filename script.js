@@ -3,9 +3,6 @@
  * Handles OAuth authentication and page transitions with history support
  */
 
-import { Analytics } from "@vercel/analytics/next"
-import { SpeedInsights } from "@vercel/speed-insights/next"
-
 // Configuration
 const CONFIG = {
     clientId: '5689277493290998256',
