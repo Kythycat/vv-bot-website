@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord Verification - VV Bot</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div id="loading" class="card" style="text-align: center;">
+            <h2>Processing</h2>
+            <p>Verifying your Discord account...</p>
+        </div>
+        
+        <div id="success" class="card" style="text-align: center; display: none;">
+            <h2>Discord Verified!</h2>
+            <p>Your Discord account has been successfully verified.</p>
+            <div id="userInfo" class="info-box" style="margin: 20px 0;">
+                <strong id="username">Loading...</strong><br>
+                <span id="discordId" style="font-size: 12px; color: #666;"></span>
+            </div>
+            <p>Now you can link your Roblox account.</p>
+            <button id="continueButton" class="button">Continue to Roblox Link</button>
+        </div>
+        
+        <div id="error" class="card" style="text-align: center; display: none;">
+            <h2>Verification Failed</h2>
+            <p id="errorMessage">Something went wrong. Please try again.</p>
+            <a href="/bot.html" class="button">Return to Home</a>
+        </div>
+        
+        <footer>
+            <p><a href="terms.html">Terms of Service</a> | <a href="privacy.html">Privacy Policy</a></p>
+        </footer>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        const error = urlParams.get('error');
+        
+        async function processDiscordOAuth() {
+            if (error) {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error').style.display = 'block';
+                document.getElementById('errorMessage').textContent = `Discord error: ${error}`;
+                return;
+            }
+            
+            if (!code) {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error').style.display = 'block';
+                document.getElementById('errorMessage').textContent = 'No authorization code received. Please try again.';
+                return;
+            }
+            
+            try {
+                // Exchange code for Discord user info
+                const response = await fetch('/api/discord-exchange', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code })
+                });
+                
+                const data = await response.json();
+                
+                if (!data.success) {
+                    throw new Error(data.error || 'Failed to verify Discord account');
+                }
+                
+                // Store Discord session
+                const session = {
+                    id: data.id,
+                    username: data.username,
+                    avatar: data.avatar,
+                    discriminator: data.discriminator
+                };
+                sessionStorage.setItem('discordSession', JSON.stringify(session));
+                
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('success').style.display = 'block';
+                document.getElementById('username').textContent = data.username;
+                document.getElementById('discordId').textContent = `ID: ${data.id}`;
+                
+                // Continue button redirects back to bot.html
+                document.getElementById('continueButton').addEventListener('click', () => {
+                    window.location.href = '/bot.html';
+                });
+                
+            } catch (err) {
+                console.error('Discord OAuth error:', err);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error').style.display = 'block';
+                document.getElementById('errorMessage').textContent = err.message || 'Failed to verify Discord account. Please try again.';
+            }
+        }
+        
+        processDiscordOAuth();
+    </script>
+</body>
+</html>

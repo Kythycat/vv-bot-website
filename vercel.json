@@ -1,8 +1,9 @@
 {
   "rewrites": [
+    { "source": "/bot", "destination": "/bot.html" },
+    { "source": "/discord-callback", "destination": "/discord-callback.html" },
     { "source": "/auth", "destination": "/auth.html" },
     { "source": "/terms", "destination": "/terms.html" },
     { "source": "/privacy", "destination": "/privacy.html" }
   ]
 }
-

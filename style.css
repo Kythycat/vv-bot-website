@@ -1247,3 +1247,23 @@ body {
     border-radius: 50%;
     overflow: hidden;
 }
+
+/* Discord Button */
+.discord-btn {
+    background: #5865F2;
+}
+
+.discord-btn:hover {
+    background: #4752c4;
+    transform: scale(1.02);
+}
+
+/* Info Box */
+.info-box {
+    background: #f9f9f9;
+    border-left: 4px solid #ff0000;
+    padding: 15px;
+    margin: 20px 0;
+    text-align: left;
+}
+
