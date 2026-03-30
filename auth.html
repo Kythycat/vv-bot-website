@@ -7,27 +7,56 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <canvas id="spaceCanvas"></canvas>
+    <div class="gradient-bg"></div>
+    <div class="noise-overlay"></div>
+    <div class="moving-lines"></div>
+    <div class="edge-glow"></div>
+
+    <div class="top-logo">
+        <div class="logo-text">VELVET VENDETTA</div>
+        <div class="logo-sub">LBG CLAN</div>
+    </div>
+
+    <div class="settings-button">
+        <button class="theme-toggle" id="themeToggle">
+            <span class="toggle-icon">🌙</span>
+        </button>
+    </div>
+
     <div class="container">
         <div id="loading" class="card" style="text-align: center;">
             <h2>Processing</h2>
             <p>Please wait while we link your account.</p>
-            <p style="font-size: 14px; color: #666; margin-top: 10px;">Verifying your Roblox credentials...</p>
+            <div class="progress-notice">
+                <span>⟡</span> Verifying your Roblox credentials... <span>⟡</span>
+            </div>
         </div>
         
         <div id="success" class="card" style="text-align: center; display: none;">
-            <h2>Successfully Linked</h2>
+            <div class="status-badge">
+                <span class="pulse-dot"></span>
+                <span class="status-text">VERIFIED</span>
+            </div>
+            <h2>✓ Successfully Linked</h2>
             <p>Your Discord account is now linked to:</p>
-            <div id="robloxName" class="roblox-name">Loading...</div>
+            <div id="robloxName" class="roblox-name" style="background: var(--progress-bg); padding: 15px; border-radius: 12px; margin: 20px 0; font-weight: bold;">Loading...</div>
             <p>Your Roblox presence will now appear in our community server.</p>
-            <div class="close-note">You can close this window and return to Discord.</div>
-            <a href="/bot.html" class="button">Return to Website</a>
+            <div class="close-note" style="font-size: 12px; color: var(--text-muted); margin-top: 20px;">You can close this window and return to Discord.</div>
+            <div class="button-group" style="margin-top: 20px;">
+                <a href="/bot.html" class="button primary">Return to Website</a>
+            </div>
         </div>
         
         <div id="membership" class="card" style="text-align: center; display: none;">
-            <h2>Community Member Verification</h2>
+            <div class="status-badge">
+                <span class="pulse-dot"></span>
+                <span class="status-text">AUTHENTICATED</span>
+            </div>
+            <h2>🔒 Community Member Verification</h2>
             <p>Your Roblox account <strong id="robloxNameMembership">Loading...</strong> has been successfully authenticated.</p>
             <div class="info-box">
-                <strong>Community Access Required</strong><br><br>
+                <strong>📌 Community Access Required</strong><br><br>
                 You have logged in successfully, but it appears you are not yet a member of our Discord community.<br><br>
                 This feature is exclusively available to verified community members. To complete your account linking:<br><br>
                 1. Join our Discord community (membership is required)<br>
@@ -36,17 +65,29 @@
                 4. Your Roblox presence will then appear in the server
             </div>
             <p><strong>Why?</strong> This helps ensure a safe and trusted community environment.</p>
-            <a href="/bot.html" class="button">Learn More</a>
+            <div class="button-group" style="margin-top: 20px;">
+                <a href="/bot.html" class="button secondary">Learn More</a>
+            </div>
         </div>
         
         <div id="error" class="card" style="text-align: center; display: none;">
-            <h2>Authentication Failed</h2>
+            <div class="status-badge">
+                <span class="pulse-dot"></span>
+                <span class="status-text">ERROR</span>
+            </div>
+            <h2>⚠ Authentication Failed</h2>
             <p id="errorMessage">Something went wrong. Please try again.</p>
             <p>Go to the "Roblox Presence Dashboard" channel in Discord and click the "Link Roblox Account" button again.</p>
-            <a href="/bot.html" class="button">Return to Website</a>
+            <div class="button-group" style="margin-top: 20px;">
+                <a href="/bot.html" class="button primary">Return to Website</a>
+            </div>
         </div>
         
         <div id="invalid" class="card" style="text-align: center; display: none;">
+            <div class="status-badge">
+                <span class="pulse-dot"></span>
+                <span class="status-text">INFO</span>
+            </div>
             <h2>How to Connect</h2>
             <p>This is the official OAuth callback endpoint for VV Bot.</p>
             <div class="info-box">
@@ -56,11 +97,17 @@
                 3. Authorize this application on Roblox<br>
                 4. Your account will be linked to the community
             </div>
-            <a href="/bot.html" class="button">Learn More</a>
+            <div class="button-group" style="margin-top: 20px;">
+                <a href="/bot.html" class="button secondary">Learn More</a>
+            </div>
         </div>
         
         <footer>
-            <p><a href="terms.html">Terms of Service</a> | <a href="privacy.html">Privacy Policy</a></p>
+            <div class="footer-links">
+                <a href="terms.html">Terms of Service</a> | 
+                <a href="privacy.html">Privacy Policy</a>
+            </div>
+            <p>VV Bot - Community Roblox Integration</p>
         </footer>
     </div>
 
@@ -69,6 +116,19 @@
         const code = urlParams.get('code');
         const state = urlParams.get('state');  // This is the Discord ID
         const error = urlParams.get('error');
+        
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        themeToggle.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+        
+        themeToggle.addEventListener('click', () => {
+            const newTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        });
         
         async function processOAuth() {
             if (error) {
@@ -87,7 +147,6 @@
             console.log('Processing OAuth with code:', code.substring(0, 10) + '...', 'discordId:', state);
             
             try {
-                // Step 1: Exchange Roblox code for user info
                 const exchangeResponse = await fetch('/api/exchange-code', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -102,7 +161,6 @@
                 
                 console.log('Roblox user:', exchangeData.robloxName);
                 
-                // Step 2: Call your bot's webhook with Discord ID (from state)
                 const botResponse = await fetch('/api/proxy', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
