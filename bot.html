@@ -6,17 +6,16 @@
     <title>VV Bot - Roblox Presence</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Additional styles for better dark mode visibility */
-        .verified-card {
+        /* Additional styles for better dark mode visibility on Discord verified section */
+        .discord-verified-card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 20px;
             padding: 20px;
-            margin-bottom: 20px;
-            transition: all 0.3s ease;
+            margin-bottom: 5px;
         }
         
-        .verified-header {
+        .discord-verified-header {
             display: flex;
             align-items: center;
             gap: 12px;
@@ -25,7 +24,7 @@
             border-bottom: 1px solid var(--border-color);
         }
         
-        .verified-icon {
+        .discord-verified-icon {
             width: 40px;
             height: 40px;
             background: linear-gradient(135deg, #10b981, #059669);
@@ -34,21 +33,39 @@
             align-items: center;
             justify-content: center;
             font-size: 20px;
-            box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
+            color: white;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
         }
         
-        .verified-title {
-            font-size: 1.2rem;
+        .discord-verified-title {
+            font-size: 1.1rem;
             font-weight: 600;
             color: var(--text-primary);
         }
         
-        .verified-subtitle {
-            font-size: 0.8rem;
+        .discord-verified-subtitle {
+            font-size: 0.75rem;
             color: var(--text-muted);
         }
         
-        .user-info-card {
+        .discord-verified-badge {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: #10b981;
+            margin-left: auto;
+        }
+        
+        [data-theme="dark"] .discord-verified-badge {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: rgba(16, 185, 129, 0.4);
+            color: #34d399;
+        }
+        
+        .discord-user-info {
             background: var(--progress-bg);
             border-radius: 12px;
             padding: 15px;
@@ -56,7 +73,13 @@
             border: 1px solid var(--border-color);
         }
         
-        .user-avatar-placeholder {
+        .discord-user-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .discord-user-avatar {
             width: 50px;
             height: 50px;
             background: linear-gradient(135deg, #5865f2, #4752c4);
@@ -64,66 +87,48 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: bold;
             color: white;
         }
         
-        .user-details {
+        .discord-user-details {
             flex: 1;
         }
         
-        .username {
-            font-size: 1.1rem;
+        .discord-username {
+            font-size: 1rem;
             font-weight: 600;
             color: var(--text-primary);
         }
         
-        .user-id {
-            font-size: 0.7rem;
+        .discord-user-id {
+            font-size: 0.65rem;
             color: var(--text-muted);
             font-family: monospace;
+            margin-top: 2px;
         }
         
-        .action-buttons {
+        .discord-action-buttons {
             display: flex;
             gap: 12px;
             margin-top: 15px;
         }
         
-        .button-outline {
+        .discord-logout-btn {
             background: transparent;
-            border: 1.5px solid var(--border-color);
+            border: 1px solid var(--border-color);
             color: var(--text-primary);
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
         
-        .button-outline:hover {
+        .discord-logout-btn:hover {
             background: var(--button-bg);
             border-color: var(--text-primary);
-        }
-        
-        .status-badge-success {
-            background: rgba(16, 185, 129, 0.15);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            color: #10b981;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-        
-        [data-theme="dark"] .status-badge-success {
-            background: rgba(16, 185, 129, 0.2);
-            border-color: rgba(16, 185, 129, 0.4);
-            color: #34d399;
-        }
-        
-        .status-badge-success::before {
-            content: "✓";
-            font-weight: bold;
         }
     </style>
 </head>
@@ -169,36 +174,40 @@
                     <div id="discordStatus" class="status-message" style="margin-top: 15px;"></div>
                 </div>
                 
-                <!-- Logged In Section (Improved Visibility) -->
+                <!-- Logged In Section - Improved Dark Mode Visibility -->
                 <div id="loggedInSection" style="display: none;">
-                    <div class="verified-card">
-                        <div class="verified-header">
-                            <div class="verified-icon">✓</div>
+                    <div class="discord-verified-card">
+                        <div class="discord-verified-header">
+                            <div class="discord-verified-icon">✓</div>
                             <div>
-                                <div class="verified-title">Discord Verified</div>
-                                <div class="verified-subtitle">Your account has been successfully verified</div>
+                                <div class="discord-verified-title">Discord Verified</div>
+                                <div class="discord-verified-subtitle">Your account has been successfully verified</div>
                             </div>
-                            <div style="margin-left: auto;">
-                                <span class="status-badge-success">Verified</span>
-                            </div>
+                            <div class="discord-verified-badge">Verified</div>
                         </div>
                         
-                        <div class="user-info-card">
-                            <div style="display: flex; align-items: center; gap: 15px;">
-                                <div class="user-avatar-placeholder" id="userAvatarPlaceholder">?</div>
-                                <div class="user-details">
-                                    <div class="username" id="verifiedUsername">Loading...</div>
-                                    <div class="user-id" id="verifiedUserId">ID: ---</div>
+                        <div class="discord-user-info">
+                            <div class="discord-user-row">
+                                <div class="discord-user-avatar" id="userAvatarPlaceholder">?</div>
+                                <div class="discord-user-details">
+                                    <div class="discord-username" id="verifiedUsername">Loading...</div>
+                                    <div class="discord-user-id" id="verifiedUserId">ID: ---</div>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="action-buttons">
-                            <button id="robloxButton" class="button primary" style="flex: 1;">Link Roblox Account →</button>
-                            <button id="logoutButton" class="button button-outline">Logout</button>
+                        <div class="discord-action-buttons">
+                            <button id="logoutButton" class="discord-logout-btn">Logout</button>
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- Roblox Card - Separate and Unchanged -->
+            <div class="card" id="robloxCard" style="display: none;">
+                <h2>Step 2: Link Roblox Account</h2>
+                <p>Your Discord account has been verified! Now link your Roblox account.</p>
+                <button id="robloxButton" class="button primary">Link Roblox Account</button>
             </div>
 
             <div class="card">
@@ -255,17 +264,17 @@
                 document.getElementById('loggedInSection').style.display = 'block';
                 document.getElementById('verifiedUsername').textContent = session.username;
                 document.getElementById('verifiedUserId').textContent = `ID: ${session.id}`;
-                // Set avatar placeholder first letter
                 document.getElementById('userAvatarPlaceholder').textContent = session.username.charAt(0).toUpperCase();
+                document.getElementById('robloxCard').style.display = 'block';
                 window.discordId = session.id;
                 
-                // Show welcome message
                 const welcomeMsg = document.getElementById('welcomeMessage');
                 welcomeMsg.style.display = 'inline-flex';
                 welcomeMsg.innerHTML = `<span>⟡</span> Welcome back, ${session.username}! Your Discord account is ready to link with Roblox. <span>⟡</span>`;
             } else {
                 document.getElementById('discordSection').style.display = 'block';
                 document.getElementById('loggedInSection').style.display = 'none';
+                document.getElementById('robloxCard').style.display = 'none';
                 document.getElementById('welcomeMessage').style.display = 'none';
             }
         }
@@ -277,7 +286,7 @@
             window.location.href = authUrl;
         });
         
-        // Logout Button - Clears session
+        // Logout Button
         document.getElementById('logoutButton').addEventListener('click', () => {
             sessionStorage.removeItem('discordSession');
             discordSession = null;
