@@ -1,9 +1,12 @@
 {
   "rewrites": [
+    { "source": "/", "destination": "/index.html" },
     { "source": "/bot", "destination": "/bot.html" },
-    { "source": "/discord-callback", "destination": "/discord-callback.html" },
-    { "source": "/auth", "destination": "/auth.html" },
     { "source": "/terms", "destination": "/terms.html" },
-    { "source": "/privacy", "destination": "/privacy.html" }
-  ]
+    { "source": "/privacy", "destination": "/privacy.html" },
+    { "source": "/credits", "destination": "/credits.html" },
+    { "source": "/auth", "destination": "/auth.html" },
+    { "source": "/discord-callback", "destination": "/discord-callback.html" }
+  ],
+  "cleanUrls": true
 }
