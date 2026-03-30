@@ -57,7 +57,8 @@
             <h2>❌ Verification Failed</h2>
             <p id="errorMessage">Something went wrong. Please try again.</p>
             <div class="button-group" style="margin-top: 20px;">
-                <a href="/bot.html" class="button primary">Return to Home</a>
+                <button id="retryButton" class="button primary">Try Again</button>
+                <a href="/bot.html" class="button secondary">Return to Home</a>
             </div>
         </div>
         
@@ -93,6 +94,7 @@
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('error').style.display = 'block';
                 document.getElementById('errorMessage').textContent = `Discord error: ${error}`;
+                setupRetryButton();
                 return;
             }
             
@@ -100,6 +102,7 @@
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('error').style.display = 'block';
                 document.getElementById('errorMessage').textContent = 'No authorization code received. Please try again.';
+                setupRetryButton();
                 return;
             }
             
@@ -134,7 +137,7 @@
                 document.getElementById('discordId').textContent = `ID: ${data.id}`;
                 
                 document.getElementById('continueButton').addEventListener('click', () => {
-                    window.location.href = '/bot.html';
+                    window.location.href = '/bot.html?verified=true';
                 });
                 
             } catch (err) {
@@ -142,6 +145,16 @@
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('error').style.display = 'block';
                 document.getElementById('errorMessage').textContent = err.message || 'Failed to verify Discord account. Please try again.';
+                setupRetryButton();
+            }
+        }
+        
+        function setupRetryButton() {
+            const retryBtn = document.getElementById('retryButton');
+            if (retryBtn) {
+                retryBtn.addEventListener('click', () => {
+                    window.location.href = '/bot.html?failed=true';
+                });
             }
         }
         

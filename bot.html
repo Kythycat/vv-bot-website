@@ -2,59 +2,65 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>VV Bot - Roblox Presence | Velvet Vendetta</title>
-    <link rel="icon" type="image/png" href="/velveticon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VV Bot - Roblox Presence</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <canvas id="spaceCanvas"></canvas>
-    <div class="noise-overlay"></div>
     <div class="gradient-bg"></div>
-    <div class="edge-glow"></div>
+    <div class="noise-overlay"></div>
     <div class="moving-lines"></div>
-    
-    <div class="settings-button">
-        <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark mode">
-            <span class="toggle-icon">🌙</span>
-        </button>
-    </div>
-    
+    <div class="edge-glow"></div>
+
     <div class="top-logo">
         <div class="logo-text">VELVET VENDETTA</div>
         <div class="logo-sub">LBG CLAN</div>
     </div>
-    
+
+    <div class="settings-button">
+        <button class="theme-toggle" id="themeToggle">
+            <span class="toggle-icon">🌙</span>
+        </button>
+    </div>
+
     <div class="container">
         <header>
             <div class="status-badge">
                 <span class="pulse-dot"></span>
-                <span class="status-text">VERIFICATION</span>
+                <span class="status-text">DEVELOPMENT</span>
             </div>
-            <h1 class="float-text">VV Bot</h1>
+            <h1>Vendetta Bot</h1>
             <div class="glow-line"></div>
-            <p class="float-text-delay">Roblox Presence & Community Help System</p>
-            <div class="progress-notice">
-                <span>⟡</span> VERIFY YOUR ACCOUNTS <span>⟡</span>
-            </div>
+            <p>Roblox Presence & Help Request System for Velvet Vendetta Community</p>
+            <div id="welcomeMessage" class="discord-context" style="display: none;"></div>
         </header>
 
         <div class="content">
-            <div class="card float-card" data-speed="0.5">
+            <div class="card">
                 <h2>Step 1: Verify with Discord</h2>
-                <p>First, verify your Discord account to ensure you're a community member of Velvet Vendetta.</p>
-                <button id="discordButton" class="button primary discord-btn">Verify with Discord</button>
-                <div id="discordStatus" class="status-message"></div>
+                <p>First, verify your Discord account to ensure you're a community member.</p>
+                <div id="discordSection">
+                    <button id="discordButton" class="button discord-btn">Verify with Discord</button>
+                    <div id="discordStatus" class="status-message" style="margin-top: 15px;"></div>
+                </div>
+                <div id="loggedInSection" style="display: none;">
+                    <div class="info-box" style="margin-bottom: 15px;">
+                        <strong>✓ Discord Verified</strong><br>
+                        <span id="verifiedUsername">Loading...</span>
+                    </div>
+                    <button id="logoutButton" class="button secondary" style="margin-top: 10px;">Logout</button>
+                </div>
             </div>
 
-            <div class="card float-card" id="robloxCard" style="display: none;" data-speed="0.3">
+            <div class="card" id="robloxCard" style="display: none;">
                 <h2>Step 2: Link Roblox Account</h2>
-                <p>Your Discord account has been verified! Now link your Roblox account to enable presence tracking.</p>
+                <p>Your Discord account has been verified! Now link your Roblox account.</p>
                 <button id="robloxButton" class="button primary">Link Roblox Account</button>
             </div>
 
-            <div class="card float-card" data-speed="0.4">
-                <h2>Core Features</h2>
+            <div class="card">
+                <h2>Features</h2>
                 <ul>
                     <li><span class="glow-dot"></span> Live Roblox presence tracking</li>
                     <li><span class="glow-dot"></span> Help request system with image uploads</li>
@@ -63,64 +69,88 @@
                 </ul>
             </div>
 
-            <div class="card float-card" data-speed="0.35">
-                <h2>Resources</h2>
+            <div class="card">
+                <h2>Links</h2>
                 <ul class="link-list">
-                    <li><a href="terms.html" class="futuristic-link" data-navigation="true">Terms of Service</a></li>
-                    <li><a href="privacy.html" class="futuristic-link" data-navigation="true">Privacy Policy</a></li>
-                    <li><a href="index.html" class="futuristic-link" data-navigation="true">Community Home</a></li>
+                    <li><a href="terms.html" class="futuristic-link">Terms of Service</a></li>
+                    <li><a href="privacy.html" class="futuristic-link">Privacy Policy</a></li>
+                    <li><a href="#" id="inviteLink" class="futuristic-link">Invite Bot to Discord</a></li>
                 </ul>
-
-            </div>
-
-            <!-- Credits Card -->
-            <div class="card float-card" data-speed="0.45">
-                <h2>Credits</h2>
-                <div class="mini-creator">
-                    <img src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-4CB61E078D009527EFCFB8AB404B2688-Png/150/150/AvatarHeadshot/Webp/noFilter" alt="Creator Avatar" class="mini-avatar">
-                    <div class="mini-info">
-                        <p class="mini-name">@kytharios</p>
-                        <p class="mini-title">Developer & Bot Creator</p>
-                    </div>
-                </div>
-                <p>Built with dedication for the Velvet Vendetta community. For inquiries, reach out on Discord or email kytharios@gmail.com.</p>
-                <a href="credits.html" class="futuristic-link">View Full Credits →</a>
             </div>
         </div>
 
         <footer>
-            <p>© 2026 Velvet Vendetta — Roblox Community</p>
+            <div class="footer-links">
+                <a href="terms.html">Terms of Service</a> | 
+                <a href="privacy.html">Privacy Policy</a>
+            </div>
+            <p>VV Bot - Community Roblox Integration</p>
         </footer>
     </div>
 
     <script>
-        // Discord OAuth Configuration
-        const DISCORD_CLIENT_ID = '1483096872011829370';
-        const REDIRECT_URI = 'https://velvet-vendetta-puce.vercel.app/discord-callback';
-        const SCOPE = 'identify';
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        themeToggle.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
         
-        const discordSession = sessionStorage.getItem('discordSession');
-        const statusDiv = document.getElementById('discordStatus');
+        themeToggle.addEventListener('click', () => {
+            const newTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        });
         
-        if (discordSession) {
-            const session = JSON.parse(discordSession);
-            statusDiv.innerHTML = `<span class="success-text">✓ Verified as: ${session.username}</span>`;
-            statusDiv.className = 'status-message success';
-            document.getElementById('discordButton').style.display = 'none';
-            document.getElementById('robloxCard').style.display = 'block';
-            window.discordId = session.id;
+        // Check for existing Discord session
+        let discordSession = sessionStorage.getItem('discordSession');
+        
+        function updateUI() {
+            if (discordSession) {
+                const session = JSON.parse(discordSession);
+                document.getElementById('discordSection').style.display = 'none';
+                document.getElementById('loggedInSection').style.display = 'block';
+                document.getElementById('verifiedUsername').innerHTML = `<strong>${session.username}</strong> (ID: ${session.id})`;
+                document.getElementById('robloxCard').style.display = 'block';
+                window.discordId = session.id;
+                
+                // Show welcome message
+                const welcomeMsg = document.getElementById('welcomeMessage');
+                welcomeMsg.style.display = 'inline-flex';
+                welcomeMsg.innerHTML = `<span>⟡</span> Welcome back, ${session.username}! Your Discord account is ready to link with Roblox. <span>⟡</span>`;
+            } else {
+                document.getElementById('discordSection').style.display = 'block';
+                document.getElementById('loggedInSection').style.display = 'none';
+                document.getElementById('robloxCard').style.display = 'none';
+                document.getElementById('welcomeMessage').style.display = 'none';
+            }
         }
         
-       // In bot.html, update the Discord button click handler:
+        // Discord Login Button
         document.getElementById('discordButton').addEventListener('click', () => {
-            const authUrl = `https://discord.com/oauth2/authorize?client_id=1483096872011829370&redirect_uri=https%3A%2F%2Fvelvet-vendetta-puce.vercel.app%2Fdiscord-callback&response_type=code&scope=identify`;
+            const redirectUri = 'https://velvet-vendetta-puce.vercel.app/discord-callback';
+            const authUrl = `https://discord.com/oauth2/authorize?client_id=1483096872011829370&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=identify`;
             window.location.href = authUrl;
         });
         
+        // Logout Button - Clears session
+        document.getElementById('logoutButton').addEventListener('click', () => {
+            sessionStorage.removeItem('discordSession');
+            discordSession = null;
+            updateUI();
+            const statusDiv = document.getElementById('discordStatus');
+            statusDiv.innerHTML = '<span class="success-text">✓ You have been logged out. You can verify again with Discord.</span>';
+            statusDiv.className = 'status-message success';
+            setTimeout(() => {
+                statusDiv.innerHTML = '';
+                statusDiv.className = 'status-message';
+            }, 3000);
+        });
+        
+        // Roblox Login Button
         document.getElementById('robloxButton').addEventListener('click', () => {
             if (!window.discordId) {
-                statusDiv.innerHTML = '<span class="error-text">✗ Please verify with Discord first.</span>';
-                statusDiv.className = 'status-message error';
+                alert('Please verify with Discord first.');
                 return;
             }
             
@@ -133,43 +163,37 @@
             window.location.href = authUrl;
         });
         
+        // Check URL parameters for verification status
+        const urlParams = new URLSearchParams(window.location.search);
+        const verified = urlParams.get('verified');
+        const failed = urlParams.get('failed');
+        
+        if (verified === 'true') {
+            const statusDiv = document.getElementById('discordStatus');
+            statusDiv.innerHTML = '<span class="success-text">✓ Discord verification successful! You can now link your Roblox account.</span>';
+            statusDiv.className = 'status-message success';
+            setTimeout(() => {
+                statusDiv.innerHTML = '';
+                statusDiv.className = 'status-message';
+            }, 5000);
+        } else if (failed === 'true') {
+            const statusDiv = document.getElementById('discordStatus');
+            statusDiv.innerHTML = '<span class="error-text">✗ Discord verification failed. Please try again.</span>';
+            statusDiv.className = 'status-message error';
+            setTimeout(() => {
+                statusDiv.innerHTML = '';
+                statusDiv.className = 'status-message';
+            }, 5000);
+        }
+        
+        // Invite link
         document.getElementById('inviteLink').addEventListener('click', (e) => {
             e.preventDefault();
-            const inviteUrl = 'https://discord.com/api/oauth2/authorize?client_id=1483096872011829370&permissions=8&scope=bot';
+            const inviteUrl = 'YOUR_DISCORD_BOT_INVITE_URL';
             window.open(inviteUrl, '_blank');
         });
         
-        const urlParams = new URLSearchParams(window.location.search);
-        const discordCode = urlParams.get('code');
-        
-        if (discordCode && !discordSession) {
-            fetch('/api/discord-callback', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ code: discordCode })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    sessionStorage.setItem('discordSession', JSON.stringify({
-                        id: data.discordId,
-                        username: data.username
-                    }));
-                    window.location.href = window.location.pathname;
-                } else {
-                    statusDiv.innerHTML = '<span class="error-text">✗ Discord verification failed. Please try again.</span>';
-                    statusDiv.className = 'status-message error';
-                }
-            })
-            .catch(error => {
-                console.error('Discord callback error:', error);
-                statusDiv.innerHTML = '<span class="error-text">✗ Verification failed. Please try again.</span>';
-                statusDiv.className = 'status-message error';
-            });
-        }
+        updateUI();
     </script>
-    
-    <script src="animations.js"></script>
-    <script src="theme.js"></script>
 </body>
 </html>
