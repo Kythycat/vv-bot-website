@@ -111,8 +111,9 @@
             window.discordId = session.id;
         }
         
+       // In bot.html, update the Discord button click handler:
         document.getElementById('discordButton').addEventListener('click', () => {
-            const authUrl = `https://discord.com/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=${SCOPE}`;
+            const authUrl = `https://discord.com/oauth2/authorize?client_id=1483096872011829370&redirect_uri=https%3A%2F%2Fvelvet-vendetta-puce.vercel.app%2Fdiscord-callback&response_type=code&scope=identify`;
             window.location.href = authUrl;
         });
         

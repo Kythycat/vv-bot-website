@@ -14,7 +14,7 @@
         </div>
         
         <div id="success" class="card" style="text-align: center; display: none;">
-            <h2>Discord Verified!</h2>
+            <h2>✅ Discord Verified!</h2>
             <p>Your Discord account has been successfully verified.</p>
             <div id="userInfo" class="info-box" style="margin: 20px 0;">
                 <strong id="username">Loading...</strong><br>
@@ -25,7 +25,7 @@
         </div>
         
         <div id="error" class="card" style="text-align: center; display: none;">
-            <h2>Verification Failed</h2>
+            <h2>❌ Verification Failed</h2>
             <p id="errorMessage">Something went wrong. Please try again.</p>
             <a href="/bot.html" class="button">Return to Home</a>
         </div>
@@ -56,7 +56,8 @@
             }
             
             try {
-                // Exchange code for Discord user info
+                console.log('Exchanging Discord code...');
+                
                 const response = await fetch('/api/discord-exchange', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -65,11 +66,16 @@
                 
                 const data = await response.json();
                 
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to verify Discord account');
+                }
+                
                 if (!data.success) {
                     throw new Error(data.error || 'Failed to verify Discord account');
                 }
                 
-                // Store Discord session
+                console.log('Discord user:', data.username);
+                
                 const session = {
                     id: data.id,
                     username: data.username,
@@ -83,7 +89,6 @@
                 document.getElementById('username').textContent = data.username;
                 document.getElementById('discordId').textContent = `ID: ${data.id}`;
                 
-                // Continue button redirects back to bot.html
                 document.getElementById('continueButton').addEventListener('click', () => {
                     window.location.href = '/bot.html';
                 });
