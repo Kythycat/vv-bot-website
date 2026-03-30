@@ -74,7 +74,7 @@
                 <ul class="link-list">
                     <li><a href="terms.html" class="futuristic-link">Terms of Service</a></li>
                     <li><a href="privacy.html" class="futuristic-link">Privacy Policy</a></li>
-                    <li><a href="#" id="inviteLink" class="futuristic-link">Invite Bot to Discord</a></li>
+                    <li><a href="index.html" class="futuristic-link">Community Home</a></li>
                 </ul>
             </div>
         </div>
@@ -82,7 +82,8 @@
         <footer>
             <div class="footer-links">
                 <a href="terms.html">Terms of Service</a> | 
-                <a href="privacy.html">Privacy Policy</a>
+                <a href="privacy.html">Privacy Policy</a> |
+                <a href="index.html">Community Home</a>
             </div>
             <p>VV Bot - Community Roblox Integration</p>
         </footer>
@@ -154,7 +155,7 @@
                 return;
             }
             
-            const clientId = '5689277493290998256';
+            const clientId = '8678137542506017326';
             const redirectUri = encodeURIComponent(window.location.origin + '/auth');
             const scope = 'openid profile';
             const state = window.discordId;
@@ -185,13 +186,6 @@
                 statusDiv.className = 'status-message';
             }, 5000);
         }
-        
-        // Invite link
-        document.getElementById('inviteLink').addEventListener('click', (e) => {
-            e.preventDefault();
-            const inviteUrl = 'YOUR_DISCORD_BOT_INVITE_URL';
-            window.open(inviteUrl, '_blank');
-        });
         
         updateUI();
     </script>
