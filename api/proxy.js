@@ -14,9 +14,13 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: 'Method not allowed' });
     }
     
+    // Use your Cloudflare Tunnel URL (UPDATE THIS WHEN TUNNEL RESTARTS)
+    const TUNNEL_URL = 'https://controversy-bench-transcription-eden.trycloudflare.com'; // <-- UPDATE THIS!
+    
     try {
-        // Forward to your bot on Wispbyte
-        const botResponse = await axios.post('http://85.215.137.163:3000/api/link', req.body, {
+        console.log(`Proxy: Forwarding to ${TUNNEL_URL}/api/link`);
+        
+        const botResponse = await axios.post(`${TUNNEL_URL}/api/link`, req.body, {
             timeout: 10000,
             headers: { 'Content-Type': 'application/json' }
         });
