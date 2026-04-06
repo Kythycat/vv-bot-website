@@ -15,7 +15,7 @@ export default async function handler(req, res) {
     }
     
     // Use your Cloudflare Tunnel URL (UPDATE THIS WHEN TUNNEL RESTARTS)
-    const TUNNEL_URL = 'https://controversy-bench-transcription-eden.trycloudflare.com'; // <-- UPDATE THIS!
+    const TUNNEL_URL = 'https://rat-lectures-stream-parent.trycloudflare.com'; // <-- UPDATE THIS!
     
     try {
         console.log(`Proxy: Forwarding to ${TUNNEL_URL}/api/link`);
