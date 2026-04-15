@@ -37,7 +37,6 @@ class SpaceBackground {
     }
     
     observeThemeChanges() {
-        // Watch for theme changes to update star colors
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 if (mutation.attributeName === 'data-theme') {
@@ -68,7 +67,6 @@ class SpaceBackground {
     }
     
     updateStarColors() {
-        // Stars will use new colors on next draw
     }
     
     resizeCanvas() {
@@ -257,7 +255,6 @@ class SpaceBackground {
     }
 }
 
-// Rest of the animations class remains the same...
 class VelvetAnimations {
     constructor() {
         this.particles = [];
@@ -391,7 +388,6 @@ class VelvetAnimations {
             this.particles.push(particle);
         }
         
-        // Update particle colors when theme changes
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 if (mutation.attributeName === 'data-theme') {

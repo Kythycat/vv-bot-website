@@ -14,8 +14,8 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: 'Method not allowed' });
     }
     
-    // Use your Cloudflare Tunnel URL (UPDATE THIS WHEN TUNNEL RESTARTS)
-    const TUNNEL_URL = 'https://same-such-visible-epinions.trycloudflare.com'; // <-- UPDATE THIS!
+   
+    const TUNNEL_URL = 'https://same-such-visible-epinions.trycloudflare.com'; // REMEMBER TO UPDATE THIS
     
     try {
         console.log(`Proxy: Forwarding to ${TUNNEL_URL}/api/link`);

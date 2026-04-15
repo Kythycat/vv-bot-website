@@ -6,14 +6,12 @@
 const THEME_KEY = 'velvet-theme';
 
 function initTheme() {
-    // Always set light mode as default on first visit
     const savedTheme = localStorage.getItem(THEME_KEY);
     
     if (savedTheme === 'dark') {
         document.body.setAttribute('data-theme', 'dark');
         updateToggleIcon('dark');
     } else {
-        // Default to light mode
         document.body.setAttribute('data-theme', 'light');
         updateToggleIcon('light');
         if (!savedTheme) {

@@ -1,23 +1,20 @@
 /**
  * Velvet Vendetta - Main Script
- * Handles OAuth authentication and page transitions with history support
  */
 
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 
-// Configuration
 const CONFIG = {
     clientId: '5689277493290998256',
     redirectUri: 'https://velvet-vendetta-puce.vercel.app/auth',
     scope: 'openid profile'
 };
 
-// Get Discord ID from URL parameter (if coming from Discord)
+
 const urlParams = new URLSearchParams(window.location.search);
 const discordId = urlParams.get('discordId');
 
-// Show Discord context if coming from Discord
 if (discordId) {
     const contextDiv = document.getElementById('discordContext');
     if (contextDiv) {
@@ -25,9 +22,7 @@ if (discordId) {
     }
 }
 
-/**
- * Redirect to Roblox OAuth authorization page
- */
+
 function redirectToAuth() {
     const state = discordId || 'default';
     
@@ -36,9 +31,7 @@ function redirectToAuth() {
     window.location.href = authUrl;
 }
 
-/**
- * Page transition for internal links
- */
+
 document.addEventListener('DOMContentLoaded', () => {
     const navLinks = document.querySelectorAll('a[data-navigation="true"]');
     
